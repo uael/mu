@@ -31,5 +31,6 @@
 # define  U_H__
 
 #include "platform.h"
+#include "compiler.h"
 
 #endif /* U_H__ */

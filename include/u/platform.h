@@ -271,7 +271,7 @@
  */
 #define ARCH_ENDIAN_BIG 0
 
-/**@}*/
+/*!@}*/
 
 #if defined(__pnacl__)
 # undef  PLATFORM_PNACL
