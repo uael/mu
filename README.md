@@ -1,2 +1,2 @@
-# yau
-yet another μ c cross-platform multi purpose library
+# mu
+μ c cross-platform multi purpose library
