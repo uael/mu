@@ -27,22 +27,22 @@
  * \author Mattias Jansson <www.github.com/rampantpixels>
  * \author Lucas Abel <www.github.com/uael>
  */
-#ifndef   U_PLATFORM_H__
-# define  U_PLATFORM_H__
+#ifndef  U_PLATFORM_H__
+# define U_PLATFORM_H__
 
-/*!\def COMPILE
+/*!\def U_COMPILE
  * \bried Defined to 1 when compiling the adt library,
  * undefined (or zero) when using the library
  */
-#ifndef COMPILE
-# define COMPILE 0
+#ifndef U_COMPILE
+# define U_COMPILE 0
 #endif
 
-/*!\def BUILD_DYNAMIC_LINK
+/*!\def U_BUILD_DYNAMIC_LINK
  * \brief compiler option
  */
-#ifndef BUILD_DYNAMIC_LINK
-# define BUILD_DYNAMIC_LINK 0
+#ifndef U_BUILD_DYNAMIC_LINK
+# define U_BUILD_DYNAMIC_LINK 0
 #endif
 
 /*!\defgroup Platform
@@ -404,7 +404,7 @@
 # undef  PLATFORM_POSIX
 # define PLATFORM_POSIX 1
 # include <TargetConditionals.h>
-# if defined(__IPHONE__) || ( defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE ) || ( defined(TARGET_IPHONE_SIMULATOR) && TARGET_IPHONE_SIMULATOR )
+# if defined(__IPHONE__) || (defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE) || (defined(TARGET_IPHONE_SIMULATOR) && TARGET_IPHONE_SIMULATOR)
 #   undef  PLATFORM_IOS
 #   define PLATFORM_IOS 1
 #   define PLATFORM_NAME "iOS"
@@ -640,24 +640,28 @@
 # error Unknown platform
 #endif
 
-#if BUILD_DYNAMIC_LINK && PLATFORM_WINDOWS
+#if U_BUILD_DYNAMIC_LINK && PLATFORM_WINDOWS
 # define EXPORT_LINK __declspec(dllexport)
 # define IMPORT_LINK __declspec(dllimport)
 #else
 # define EXPORT_LINK
 # define IMPORT_LINK
 #endif
-#if COMPILE
+#if U_COMPILE
 # ifdef __cplusplus
-#   define uextern extern "C" EXPORT_LINK
+#   define uextern extern "C" IMPORT_LINK
+#   define uapi extern "C" EXPORT_LINK
 # else
-#   define uextern extern EXPORT_LINK
+#   define uextern extern IMPORT_LINK
+#   define uapi extern EXPORT_LINK
 # endif
 #else
 # ifdef __cplusplus
 #   define uextern extern "C" IMPORT_LINK
+#   define uapi extern "C" IMPORT_LINK
 # else
 #   define uextern extern IMPORT_LINK
+#   define uapi extern IMPORT_LINK
 # endif
 #endif
 

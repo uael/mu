@@ -27,8 +27,8 @@
  * \author Mattias Jansson <www.github.com/rampantpixels>
  * \author Lucas Abel <www.github.com/uael>
  */
-#ifndef   U_COMPILER_H__
-# define  U_COMPILER_H__
+#ifndef  U_COMPILER_H__
+# define U_COMPILER_H__
 
 #include "platform.h"
 
