@@ -23,8 +23,13 @@
  * SOFTWARE.
  */
 
+/**
+ * @file u.h
+ * @author Lucas Abel <www.github.com/uael>
+ */
 #ifndef   U_H__
 # define  U_H__
 
+#include "platform.h"
 
 #endif /* U_H__ */
