@@ -36,7 +36,7 @@ before_build:
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" ..
 
 build:
-  project: C:\projects\mu\build\mu.sln
+  project: C:\projects\mu\build\u.sln
   verbosity: quiet
 
 test: off
