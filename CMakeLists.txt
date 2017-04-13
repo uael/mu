@@ -22,7 +22,12 @@ file(GLOB u_SOURCES ${u_SOURCES} ${u_SRC_DIR}/*.c)
 
 include_directories(${u_INC_DIR})
 add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
-target_link_libraries(${PROJECT_NAME} pthread m dl)
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC winmm)
+else()
+    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC m)
+endif()
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
