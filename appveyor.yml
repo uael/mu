@@ -39,4 +39,6 @@ build:
   project: C:\projects\mu\build\u.sln
   verbosity: quiet
 
-test: off
+test_script:
+  - ps: cd C:\projects\mu\build
+  - ctest -VV
