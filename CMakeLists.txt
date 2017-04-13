@@ -30,7 +30,9 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 include_directories(${u_TST_DIR})
 
-set(CMAKE_C_FLAGS -Wno-int-conversion)
+if(UNIX)
+    set(CMAKE_C_FLAGS -Wno-int-conversion)
+endif()
 
 file(GLOB adt_TST_DIRS ${adt_TST_DIRS} ${u_TST_DIR}/*.c)
 foreach(test ${adt_TST_DIRS})
