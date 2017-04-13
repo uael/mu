@@ -110,13 +110,14 @@
 
 #define NX_STRINGIFY(x) #x
 #define STRINGIFY(x) NX_STRINGIFY(x)
+#define VERSION_NO(A, B, C) (((A)*10000UL)+(B)*100UL+(C))
 
 #if defined(__clang__)
 # undef  COMPILER_CLANG
 # define COMPILER_CLANG 1
 # define COMPILER_NAME "clang"
 # define COMPILER_DESCRIPTION COMPILER_NAME " " #__clang_major__ "." #__clang_minor__
-# define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+# define COMPILER_VERSION VERSION_NO(__clang_major__, __clang_minor__, __clang_patchlevel__)
 # define restrict __restrict
 # define thread_local _Thread_local
 # define ATTR(x) __attribute__((__##x##__))
@@ -174,6 +175,7 @@
 # elif defined(__ICC)
 #   define COMPILER_DESCRIPTION COMPILER_NAME " " #__ICC
 # endif
+# define COMPILER_VERSION VERSION_NO(__INTEL_COMPILER, 0, 0)
 # define restrict __restrict
 # define thread_local __declspec(thread)
 # define ATTR(x)
@@ -201,6 +203,7 @@
 # define COMPILER_MSVC 1
 # define COMPILER_NAME "msvc"
 # define COMPILER_DESCRIPTION COMPILER_NAME " " STRINGIFY(_MSC_VER)
+# define COMPILER_VERSION _MSC_VER
 # define ATTR(x)
 # define ATTR2(x,y)
 # define ATTR3(x,y,z)
@@ -249,7 +252,7 @@
 # define COMPILER_GCC 1
 # define COMPILER_NAME "gcc"
 # define COMPILER_DESCRIPTION COMPILER_NAME " " STRINGIFY(__GNUC__) "." STRINGIFY(__GNUC_MINOR__)
-# define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+# define COMPILER_VERSION VERSION_NO(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 # define restrict __restrict
 # define thread_local __thread
 # define ATTR(x) __attribute__((__##x##__))
@@ -267,7 +270,7 @@
 # define ALIGNED_STRUCT(name, alignment) struct ALIGN(alignment) name
 # define LIKELY(x) __builtin_expect(!!(x), 1)
 # define UNLIKELY(x) __builtin_expect(!!(x), 0)
-# if GCC_VERSION >= 40600UL
+# if COMPILER_VERSION >= 40600UL
 #   define static_assert _Static_assert
 # endif
 # if PLATFORM_WINDOWS
@@ -319,19 +322,6 @@
 #if PLATFORM_POSIX
 # ifndef _GNU_SOURCE
 #   define _GNU_SOURCE
-# endif
-#endif
-
-#if COMPILER_CLANG
-# pragma clang diagnostic push
-# if __has_warning("-Wundef")
-#   pragma clang diagnostic ignored "-Wundef"
-# endif
-# if __has_warning("-Wsign-conversion")
-#   pragma clang diagnostic ignored "-Wsign-conversion"
-# endif
-# if __has_warning("-Wunknown-attributes")
-#   pragma clang diagnostic ignored "-Wunknown-attributes"
 # endif
 #endif
 

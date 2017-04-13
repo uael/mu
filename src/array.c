@@ -23,12 +23,39 @@
  * SOFTWARE.
  */
 
-/*!\file vector.h
- * \author Mattias Jansson <www.github.com/rampantpixels>
- * \author Lucas Abel <www.github.com/uael>
- */
-#ifndef  U_VECTOR_H__
-# define U_VECTOR_H__
+#include <u/array.h>
 
+void __uarr_growup(void **arr, size_t n, size_t item_size) {
+  size_t *raw, *buffer, capacity;
 
-#endif /* U_VECTOR_H__ */
+  if (n) {
+    if (*arr) {
+      raw = UARR_RAW(*arr);
+      if (raw[0] > raw[1] + n) {
+        return;
+      }
+      do raw[0] *= 2; while(raw[0] <= raw[1] + n);
+      buffer = realloc(raw, item_size * raw[0] + 8U * UARR_HEADER_SIZE);
+    } else {
+      capacity = UARR_MIN_CAPACITY;
+      while (capacity <= n) capacity *= 2;
+      buffer = malloc(item_size * capacity + 8U * UARR_HEADER_SIZE);
+      buffer[0] = capacity;
+      buffer[1] = 0;
+    }
+    *arr = buffer + UARR_HEADER_SIZE;
+  }
+  return;
+}
+
+void __uarr_resize(void **arr, size_t size, size_t item_size) {
+  if (!(*arr) && size) {
+    __uarr_growup(arr, size, item_size);
+  }
+  else if (*arr && UARR_RAW_CAPACITY(*arr) < size) {
+    __uarr_growup(arr, size - UARR_RAW_CAPACITY(*arr), item_size);
+  }
+  if (*arr) {
+    UARR_RAW_SIZE(*arr) = size;
+  }
+}

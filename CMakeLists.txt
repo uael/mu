@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
 project(u)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib")
@@ -21,7 +21,24 @@ file(GLOB u_HEADERS ${u_HEADERS} ${u_INC_DIR}/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SRC_DIR}/*.c)
 
 include_directories(${u_INC_DIR})
-add_library(${PROJECT_NAME} STATIC ${u_SOURCES})
+add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
 target_link_libraries(${PROJECT_NAME} pthread m dl)
 
-add_subdirectory(${u_TST_DIR})
+enable_testing()
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
+
+unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+include_directories(${u_TST_DIR})
+
+set(CMAKE_C_FLAGS -Wno-int-conversion)
+
+file(GLOB adt_TST_DIRS ${adt_TST_DIRS} ${u_TST_DIR}/*.c)
+foreach(test ${adt_TST_DIRS})
+    get_filename_component(test_NAME ${test} NAME_WE)
+    if(NOT ${test_NAME} STREQUAL test)
+        add_executable(${test_NAME} ${test})
+        add_test(test_${test_NAME} ${test_NAME})
+        target_link_libraries(${test_NAME} ${PROJECT_NAME})
+        add_dependencies(check ${test_NAME})
+    endif()
+endforeach()

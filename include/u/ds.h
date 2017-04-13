@@ -34,6 +34,6 @@
 #include "hash.h"
 #include "list.h"
 #include "stack.h"
-#include "vector.h"
+#include "array.h"
 
 #endif /* U_DS_H__ */
