@@ -25,6 +25,8 @@
 
 #include <u/array.h>
 
+#define IS_POWER_OF2(n) ((n & (n - 1)) == 0)
+
 void __uarr_growup(void **arr, size_t n, size_t item_size) {
   size_t *raw, *buffer, capacity;
 
@@ -34,11 +36,19 @@ void __uarr_growup(void **arr, size_t n, size_t item_size) {
       if (raw[0] > raw[1] + n) {
         return;
       }
-      do raw[0] *= 2; while(raw[0] <= raw[1] + n);
+      if (IS_POWER_OF2(raw[1] + n)) {
+        raw[0] = raw[1] + n;
+      } else {
+        do raw[0] *= 2; while(raw[0] <= raw[1] + n);
+      }
       buffer = realloc(raw, item_size * raw[0] + 8U * UARR_HEADER_SIZE);
     } else {
-      capacity = UARR_MIN_CAPACITY;
-      while (capacity <= n) capacity *= 2;
+      if (n == UARR_MIN_CAPACITY || (n > UARR_MIN_CAPACITY && IS_POWER_OF2(n))) {
+        capacity = n;
+      } else {
+        capacity = UARR_MIN_CAPACITY;
+        while (capacity <= n) capacity *= 2;
+      }
       buffer = malloc(item_size * capacity + 8U * UARR_HEADER_SIZE);
       buffer[0] = capacity;
       buffer[1] = 0;
@@ -53,7 +63,7 @@ void __uarr_resize(void **arr, size_t size, size_t item_size) {
     __uarr_growup(arr, size, item_size);
   }
   else if (*arr && UARR_RAW_CAPACITY(*arr) < size) {
-    __uarr_growup(arr, size - UARR_RAW_CAPACITY(*arr), item_size);
+    __uarr_growup(arr, size - UARR_RAW_SIZE(*arr), item_size);
   }
   if (*arr) {
     UARR_RAW_SIZE(*arr) = size;

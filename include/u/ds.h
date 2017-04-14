@@ -30,10 +30,11 @@
 #ifndef  U_DS_H__
 # define U_DS_H__
 
+#include "array.h"
 #include "deque.h"
 #include "hash.h"
 #include "list.h"
 #include "stack.h"
-#include "array.h"
+#include "vector.h"
 
 #endif /* U_DS_H__ */

@@ -101,10 +101,11 @@
 
 /*!\def   uarr_clear
  * \brief Set size to 0. Does not affect capacity or resize array storage buffer.
+ *        Reset all memory
  * \param array Array pointer
  */
 #define uarr_clear(array) \
-  ((array) ? (UARR_RAW_SIZE(array) = 0) : 0)
+  ((array) ? (memset((array), 0, UARR_RAW_SIZE(array)), UARR_RAW_SIZE(array) = 0) : 0)
 
 /*!\def   uarr_copy
  * \brief Copy content of one array to another, setting new destination array size to source array
@@ -134,7 +135,7 @@
 #define uarr_push(array, element) \
   (UARR_GROWUP(array, 1), (array)[UARR_RAW_SIZE(array)++] = (element))
 
-/*!\def uarr_push_memcpy
+/*!\def   uarr_push_memcpy
  * \brief Add element at end of array copying data with memcpy. Value of expression
  *        is new array pointer.
  * \param array       Array pointer
@@ -146,21 +147,22 @@
     (array))
 
 /*!\def   uarr_insert
- * \brief Add element at given position in array with assignment. Position is NOT range checked.
+ * \brief Add element at given position in array with assignment. Position is range checked.
  *        Existing elements are moved using memmove. Value of expression is new array pointer.
  * \param array   Array pointer
  * \param pos     Position
  * \param element New element
  */
 #define uarr_insert(array, pos, element) \
-  (UARR_GROWUP(array, 1), (array) ? \
+  ((pos) >= 0 ? \
+    UARR_GROWUP(array, (array) ? ((pos) < UARR_RAW_SIZE(array) ? 1 : ((pos) > 0 ? (pos) : 1)) : ((pos) > 0 ? (pos) : 1)), \
     (memmove((array) + (pos) + 1, (array) + (pos), \
       sizeof(*(array)) * (UARR_RAW_SIZE(array)++ - (pos))), \
     (array)[(pos)] = (element), (array)) : \
     (array))
 
 /*!\def   uarr_insert_memcpy
- * \brief Add element at given position in array, copy data using memcpy. Position is NOT range
+ * \brief Add element at given position in array, copy data using memcpy. Position is range
  *        checked.
  *        Existing elements are moved using memmove. Value of expression is new array pointer.
  * \param array       Array pointer
@@ -168,39 +170,12 @@
  * \param element_ptr Pointer to new element
  */
 #define uarr_insert_memcpy(array, pos, element_ptr) \
-  (UARR_GROWUP(array, 1), (array) ? \
+  ((pos) >= 0 ? \
+    UARR_GROWUP(array, (array) ? ((pos) < UARR_RAW_SIZE(array) ? 1 : (pos)) : (pos)), \
     (memmove((array) + (pos) + 1, (array) + (pos), \
       sizeof(*(array)) * (UARR_RAW_SIZE(array)++ - (pos))), \
     memcpy((array) + (pos), (element_ptr), sizeof(*(array))), (array)) : \
     (array))
-
-/*!\def   uarr_insert_safe
- * \brief Add element at given position in array with assignment. Position IS range checked and
- *        clamped to array size. Existing elements are moved using memmove.
- * \param array   Array pointer
- * \param pos     Position
- * \param element New element
- */
-#define uarr_insert_safe(array, pos, element) do { \
-  size_t _arr_size = uarr_size(array); \
-  size_t _clamped_pos = ((size_t)(pos) & 0x80000000U) ? \
-    0 : math_min((size_t)(pos), _arr_size); \
-  uarr_insert(array, _clamped_pos, element); \
-  } while(0)
-
-/*!\def   uarr_insert_memcpy_safe
- * \brief Add element at given position in array, copy data using memcpy. Position IS range
- *        checked and clamped to array size. Existing elements are moved using memmove.
- * \param array       Array pointer
- * \param pos         Position
- * \param element_ptr Pointer to new element
- */
-#define uarr_insert_memcpy_safe(array, pos, element_ptr) do { \
-  size_t _arr_size = uarr_size(array); \
-  size_t _clamped_pos = ((size_t)(pos) & 0x80000000U) ? \
-    0 : math_min((size_t)(pos), _arr_size); \
-  uarr_insert_memcpy(array, _clamped_pos, element_ptr); \
-  } while(0)
 
 /*!\def   uarr_pop
  * \brief Remove last element. Array size is NOT validated, will cause undefined behaviour if
@@ -229,7 +204,7 @@
       --UARR_RAW_SIZE(array) : \
     0)
 
-/*!\def uarr_erase_memcpy
+/*!\def   uarr_erase_memcpy
  * \brief Erase element at given position without preserving order, swap-with-last by copy data
  *        using memcpy. Position is NOT ranged checked.
  * \param array Array pointer

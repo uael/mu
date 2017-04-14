@@ -2,6 +2,7 @@
 
 #define CTEST_MAIN
 #define CTEST_SEGFAULT
+#define CTEST_COLOR_OK
 
 #include <ctest/ctest.h>
 
@@ -81,10 +82,10 @@ CTEST(array, allocation) {
     ASSERT_EQUAL(0, uarr_size(uarr_basic));
     ASSERT_EQUAL(0, uarr_size(uarr_combine));
 
-    ASSERT_EQUAL(64, uarr_capacity(uarr_ptr));
+    ASSERT_EQUAL(32, uarr_capacity(uarr_ptr));
     ASSERT_EQUAL(64, uarr_capacity(uarr_int));
     ASSERT_EQUAL(64, uarr_capacity(uarr_obj));
-    ASSERT_EQUAL(2048, uarr_capacity(uarr_basic));
+    ASSERT_EQUAL(1024, uarr_capacity(uarr_basic));
     ASSERT_EQUAL(32768, uarr_capacity(uarr_combine));
   }
 // Deallocate
@@ -145,9 +146,9 @@ CTEST(array, allocation) {
     ASSERT_EQUAL(24 * 2, uarr_size(uarr_basic));
     ASSERT_EQUAL(0, uarr_size(uarr_combine));
 
-    ASSERT_EQUAL(131072, uarr_capacity(uarr_ptr));
-    ASSERT_EQUAL(16384, uarr_capacity(uarr_int));
-    ASSERT_EQUAL(1024, uarr_capacity(uarr_obj));
+    ASSERT_EQUAL(262144, uarr_capacity(uarr_ptr));
+    ASSERT_EQUAL(32768, uarr_capacity(uarr_int));
+    ASSERT_EQUAL(2048, uarr_capacity(uarr_obj));
     ASSERT_EQUAL(64, uarr_capacity(uarr_basic));
     ASSERT_EQUAL(0, uarr_capacity(uarr_combine));
 
@@ -246,7 +247,7 @@ CTEST(array, allocation) {
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_ptr));
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_int));
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_obj));
-    ASSERT_EQUAL(8, uarr_capacity(uarr_basic));
+    ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_basic));
     ASSERT_EQUAL(8, uarr_capacity(uarr_combine));
 
     ASSERT_NOT_EQUAL(uarr_ptr, 0);
@@ -276,7 +277,7 @@ CTEST(array, allocation) {
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_ptr));
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_int));
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_obj));
-    ASSERT_EQUAL(8, uarr_capacity(uarr_basic));
+    ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_basic));
     ASSERT_EQUAL(8, uarr_capacity(uarr_combine));
 
     ASSERT_EQUAL(uarr_ptr_prev, uarr_ptr);
@@ -301,7 +302,7 @@ CTEST(array, allocation) {
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_int));
     ASSERT_EQUAL(8, uarr_capacity(uarr_obj));
     ASSERT_EQUAL(8, uarr_capacity(uarr_basic));
-    ASSERT_EQUAL(8, uarr_capacity(uarr_combine));
+    ASSERT_EQUAL(16, uarr_capacity(uarr_combine));
   }
 
   uarr_dtor(uarr_ptr);
@@ -838,19 +839,17 @@ CTEST(array, inserterase) {
     combine.ptrval = 0;
     combine.unionval.realval = REAL_C(1.0);
 
-#define math_min(a, b) ((a)<(b)?(a):(b))
+    uarr_insert(uarr_ptr, large_neg, 0);
+    uarr_insert(uarr_int, small_neg, 0);
+    uarr_insert(uarr_obj, 0, 0);
+    uarr_insert(uarr_basic, 1, basic);
+    uarr_insert(uarr_combine, 1234, combine);
 
-    uarr_insert_safe(uarr_ptr, large_neg, 0);
-    uarr_insert_safe(uarr_int, small_neg, 0);
-    uarr_insert_safe(uarr_obj, 0, 0);
-    uarr_insert_safe(uarr_basic, 1, basic);
-    uarr_insert_safe(uarr_combine, 1234, combine);
-
-    ASSERT_EQUAL(1, uarr_size(uarr_ptr));
-    ASSERT_EQUAL(1, uarr_size(uarr_int));
-    ASSERT_EQUAL(1, uarr_size(uarr_obj));
-    ASSERT_EQUAL(1, uarr_size(uarr_basic));
-    ASSERT_EQUAL(1, uarr_size(uarr_combine));
+    ASSERT_EQUAL(0, uarr_size(uarr_ptr));
+    ASSERT_EQUAL(0, uarr_size(uarr_int));
+    ASSERT_EQUAL(0, uarr_size(uarr_obj));
+    ASSERT_EQUAL(0, uarr_size(uarr_basic));
+    ASSERT_EQUAL(0, uarr_size(uarr_combine));
 
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_ptr));
     ASSERT_EQUAL(UARR_MIN_CAPACITY, uarr_capacity(uarr_int));
@@ -889,11 +888,11 @@ CTEST(array, inserterase) {
     combine.unionval.basicval.intval = i + 7;
     combine.unionval.basicval.objval = (uint64_t) (i + 8);
 
-    uarr_insert_safe(uarr_ptr, 129 - i, (void *) ((uintptr_t) i));
-    uarr_insert_safe(uarr_int, 129 - i, i);
-    uarr_insert_safe(uarr_obj, 129 - i, (uint64_t) i);
-    uarr_insert_safe(uarr_basic, 129 - i, basic);
-    uarr_insert_safe(uarr_combine, 129 - i, combine);
+    uarr_insert(uarr_ptr, 129 - i, (void *) ((uintptr_t) i));
+    uarr_insert(uarr_int, 129 - i, i);
+    uarr_insert(uarr_obj, 129 - i, (uint64_t) i);
+    uarr_insert(uarr_basic, 129 - i, basic);
+    uarr_insert(uarr_combine, 129 - i, combine);
 
     ASSERT_EQUAL((unsigned int) i + 1, uarr_size(uarr_ptr));
     ASSERT_EQUAL((unsigned int) i + 1, uarr_size(uarr_int));
@@ -972,7 +971,7 @@ CTEST(array, resize) {
   ASSERT_EQUAL(2, uarr_size(intarr));
 
   uarr_grow(intarr, 15);
-  ASSERT_EQUAL(16, uarr_capacity(intarr));
+  ASSERT_EQUAL(32, uarr_capacity(intarr));
   ASSERT_EQUAL(17, uarr_size(intarr));
 
   uarr_dtor(intarr);
