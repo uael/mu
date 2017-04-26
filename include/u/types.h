@@ -46,7 +46,7 @@
 #endif
 
 #ifndef __cplusplus
-# define nullptr ((void*)0)
+# define nullptr NULL
 #endif
 
 #if !defined(__cplusplus) && COMPILER_MSVC && COMPILER_VERSION < 1900

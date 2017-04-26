@@ -23,6 +23,7 @@ clone_folder: C:\projects\mu
 branches:
   only:
     - master
+    - dev
 
 install:
   - git submodule update --init --recursive
@@ -41,4 +42,4 @@ build:
 
 test_script:
   - ps: cd C:\projects\mu\build
-  - ctest -VV
+  - cmd: ctest -VV

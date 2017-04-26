@@ -24,16 +24,59 @@
  */
 
 /*!\file ds.h
- * \author Mattias Jansson <www.github.com/rampantpixels>
  * \author Lucas Abel <www.github.com/uael>
  */
 #ifndef  U_DS_H__
 # define U_DS_H__
 
+#include "types.h"
+
+/*!\def ds_data
+ * \param ds Data Structure
+ */
+#define ds_super(T) \
+  size_t cap, size; \
+  T *data
+
+/*!\def   ds_cap
+ * \brief Get cap of data structure in number of elements. Capacity indicates the size of the allocated
+ *        memory block (maximum size of data structure).
+ * \param ds Data Structure
+ */
+#define ds_cap(ds) (ds).cap
+
+/*!\def   ds_size
+ * \brief Get number of currently stored elements.
+ * \param ds Data Structure
+ */
+#define ds_size(ds) (ds).size
+
+/*!\def ds_data
+ * \param ds Data Structure
+ */
+#define ds_data(ds) (ds).data
+
+/*!\def ds_at
+ * \param ds    Data Structure
+ * \param index Index
+ */
+#define ds_at(ds, index) ds_data(ds)[index]
+
+/*!\def ds_front
+ * \param ds Data Structure
+ */
+#define ds_front(ds) ds_at(ds, 0)
+
+/*!\def ds_back
+ * \param ds Data Structure
+ */
+#define ds_back(ds) ds_at(ds, ds_size(ds) - 1)
+
+#include "buffer.h"
 #include "deque.h"
 #include "hash.h"
 #include "list.h"
 #include "stack.h"
-#include "array.h"
+#include "vector.h"
 
 #endif /* U_DS_H__ */

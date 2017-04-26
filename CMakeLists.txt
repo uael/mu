@@ -13,14 +13,30 @@ else()
     set(CMAKE_C_STANDARD 99)
 endif()
 
-set(u_INC_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
-set(u_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
-set(u_TST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
+if(MSVC)
+    set(CMAKE_FLAGS
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+    )
+    foreach(CMAKE_FLAG ${CMAKE_FLAGS})
+        string(REPLACE "/MD" "/MT" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
+        string(REPLACE "/MDd" "/MTd" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
+    endforeach()
+endif()
 
-file(GLOB u_HEADERS ${u_HEADERS} ${u_INC_DIR}/*.h)
-file(GLOB u_SOURCES ${u_SOURCES} ${u_SRC_DIR}/*.c)
+set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+set(u_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
+set(u_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
+set(u_VENDOR_DIR  ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
-include_directories(${u_INC_DIR})
+file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
+file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
+
+include_directories(${u_INCLUDE_DIR})
 add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
 
 if(WIN32)
@@ -29,23 +45,11 @@ else()
     target_link_libraries(${PROJECT_NAME} LINK_PUBLIC m)
 endif()
 
-enable_testing()
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-
+unset(CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+unset(CMAKE_LIBRARY_OUTPUT_DIRECTORY)
 unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-include_directories(${u_TST_DIR})
 
-if(UNIX)
-    set(CMAKE_C_FLAGS -Wno-int-conversion)
-endif()
+add_subdirectory(${u_VENDOR_DIR})
 
-file(GLOB adt_TST_DIRS ${adt_TST_DIRS} ${u_TST_DIR}/*.c)
-foreach(test ${adt_TST_DIRS})
-    get_filename_component(test_NAME ${test} NAME_WE)
-    if(NOT ${test_NAME} STREQUAL test)
-        add_executable(${test_NAME} ${test})
-        add_test(test_${test_NAME} ${test_NAME})
-        target_link_libraries(${test_NAME} ${PROJECT_NAME})
-        add_dependencies(check ${test_NAME})
-    endif()
-endforeach()
+enable_testing()
+add_subdirectory(${u_TEST_DIR})

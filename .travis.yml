@@ -4,9 +4,9 @@ language: c
 install:
   - mkdir build && cd build
   - cmake ..
-  - make
+  - make all
 
-script: make check
+script: ctest --verbose
 
 matrix:
   include:

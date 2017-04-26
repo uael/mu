@@ -23,15 +23,31 @@
  * SOFTWARE.
  */
 
-/**
- * @file u.h
- * @author Lucas Abel <www.github.com/uael>
- */
-#ifndef   U_H__
-# define  U_H__
+#include <u/buffer.h>
+#include <u/math.h>
 
-#include "platform.h"
-#include "compiler.h"
-#include "ds.h"
-
-#endif /* U_H__ */
+size_t buf_alloc(buffer_t *self, const ssize_t nmin, const size_t isize) {
+  if (nmin > 0) {
+    if (self->cap) {
+      if (self->cap < nmin) {
+        if (ISPOW2(nmin)) {
+          self->cap = (size_t) nmin;
+        } else {
+          self->cap = self->cap;
+          do self->cap *= 2; while(self->cap < nmin);
+        }
+        self->data = realloc(self->data, isize * self->cap);
+      }
+    } else {
+      if (nmin == BUFFER_MIN_CAPACITY || (nmin > BUFFER_MIN_CAPACITY && ISPOW2(nmin))) {
+        self->cap = (size_t) nmin;
+      } else {
+        self->cap = BUFFER_MIN_CAPACITY;
+        while (self->cap < nmin) self->cap *= 2;
+      }
+      self->data = malloc(isize * self->cap);
+    }
+    return (size_t) nmin;
+  }
+  return 0;
+}
