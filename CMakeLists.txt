@@ -13,19 +13,15 @@ else()
     set(CMAKE_C_STANDARD 99)
 endif()
 
-if(WIN32)
-    set(CMAKE_FLAGS
-        CMAKE_CXX_FLAGS
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_C_FLAGS
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_RELEASE
-    )
-    foreach(CMAKE_FLAG ${CMAKE_FLAGS})
-        string(REPLACE "/MD" "/MT" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
-        string(REPLACE "/MDd" "/MTd" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
-    endforeach()
+if(MSVC)
+    set(CMAKE_C_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
+    set(CMAKE_C_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
+    set(CMAKE_C_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO_INIT "/MT /Zi /O2 /Ob1 /D NDEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "/MT /Zi /O2 /Ob1 /D NDEBUG")
 endif()
 
 set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -37,12 +33,12 @@ file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
 
 include_directories(${u_INCLUDE_DIR})
-add_library(${PROJECT_NAME} ${u_SOURCES} ${u_HEADERS})
+add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
 
 if(WIN32)
-    target_link_libraries(${PROJECT_NAME} winmm)
+    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC winmm)
 else()
-    target_link_libraries(${PROJECT_NAME} m)
+    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC m)
 endif()
 
 unset(CMAKE_ARCHIVE_OUTPUT_DIRECTORY)

@@ -221,10 +221,12 @@
 # define ALIGNED_STRUCT(name, alignment) ALIGN(alignment) struct name
 # define LIKELY(x) (x)
 # define UNLIKELY(x) (x)
+# pragma warning(disable : 4018)
 # pragma warning(disable : 4054)
 # pragma warning(disable : 4055)
 # pragma warning(disable : 4127)
 # pragma warning(disable : 4132)
+# pragma warning(disable : 4146)
 # pragma warning(disable : 4200)
 # pragma warning(disable : 4204)
 # pragma warning(disable : 4706)
