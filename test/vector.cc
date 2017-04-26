@@ -39,6 +39,12 @@ struct VectorTest : public ::testing::Test {
     s4 = (size_t) dist4(eng);
 
     qRoundUp32();
+
+    v0 = {0};
+    v1 = {0};
+    v2 = {0};
+    v3 = {0};
+    v4 = {0};
   }
 
   virtual void TearDown() {
@@ -69,11 +75,11 @@ struct VectorTest : public ::testing::Test {
   size_t s3, q3;
   size_t s4, q4;
 
-  vec_of(int) v0 = {0};
-  vec_of(size_t) v1 = {0};
-  vec_of(struct { int x; int y; }) v2 = {0};
-  vec_of(Point) v3 = {0};
-  vec_of(void *) v4 = {0};
+  vec_of(int) v0;
+  vec_of(size_t) v1;
+  vec_of(struct { int x; int y; }) v2;
+  vec_of(Point) v3;
+  vec_of(void *) v4;
 };
 
 TEST_F(VectorTest, grow) {
