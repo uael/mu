@@ -1,7 +1,9 @@
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 if(CMAKE_VERSION VERSION_LESS "3.1")
-    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+    endif()
 else()
     set(CMAKE_CXX_STANDARD 11)
 endif()
