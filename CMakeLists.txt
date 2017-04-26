@@ -22,12 +22,12 @@ file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
 
 include_directories(${u_INCLUDE_DIR})
-add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
+add_library(${PROJECT_NAME} ${u_SOURCES} ${u_HEADERS})
 
 if(WIN32)
-    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC winmm)
+    target_link_libraries(${PROJECT_NAME} winmm)
 else()
-    target_link_libraries(${PROJECT_NAME} LINK_PUBLIC m)
+    target_link_libraries(${PROJECT_NAME} m)
 endif()
 
 unset(CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
