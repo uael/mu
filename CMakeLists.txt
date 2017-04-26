@@ -13,6 +13,21 @@ else()
     set(CMAKE_C_STANDARD 99)
 endif()
 
+if(WIN32)
+    set(CMAKE_FLAGS
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+    )
+    foreach(CMAKE_FLAG ${CMAKE_FLAGS})
+        string(REPLACE "/MD" "/MT" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
+        string(REPLACE "/MDd" "/MTd" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
+    endforeach()
+endif()
+
 set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(u_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
 set(u_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
