@@ -8,6 +8,20 @@ else()
     set(CMAKE_CXX_STANDARD 11)
 endif()
 
+if(WIN32)
+    set(CMAKE_FLAGS
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+    )
+    foreach(CMAKE_FLAG ${CMAKE_FLAGS})
+        string(REPLACE "/MD" "/MT" ${CMAKE_FLAG} "${${CMAKE_FLAG}}")
+    endforeach()
+endif()
+
 file(GLOB check_SOURCES ${check_SOURCES} ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
 add_executable(tests ${check_SOURCES})
