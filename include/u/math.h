@@ -23,15 +23,36 @@
  * SOFTWARE.
  */
 
-/**
- * @file u.h
- * @author Lucas Abel <www.github.com/uael>
+/*!\file math.h
+ * \author Lucas Abel <www.github.com/uael>
  */
-#ifndef   U_H__
-# define  U_H__
+#ifndef  U_MATH_H__
+# define U_MATH_H__
 
-#include "platform.h"
-#include "compiler.h"
-#include "ds.h"
+#include "types.h"
 
-#endif /* U_H__ */
+/*!@def ISPOW2
+ * @brief Check if @n is a power of 2.
+ * @param n The number to check.
+ */
+#define ISPOW2(n) (((n) & -(n)) == (n))
+
+API FORCEINLINE CONSTCALL bool ispow2(const long n) {
+  return ISPOW2(n);
+}
+
+#define ROUNDUP32(x) (--(x), (x)|=(x)>>1, (x)|=(x)>>2, (x)|=(x)>>4, (x)|=(x)>>8, (x)|=(x)>>16, ++(x))
+
+API FORCEINLINE CONSTCALL size_t roundup32(size_t n) {
+  size_t j;
+  return ISPOW2(n) ? n : (
+    ((j = n & 0xFFFF0000) || (j = n)),
+    ((n = j & 0xFF00FF00) || (n = j)),
+    ((j = n & 0xF0F0F0F0) || (j = n)),
+    ((n = j & 0xCCCCCCCC) || (n = j)),
+    ((j = n & 0xAAAAAAAA) || (j = n)),
+    j << 1
+  );
+}
+
+#endif /* U_MATH_H__ */

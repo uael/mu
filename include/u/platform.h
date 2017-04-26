@@ -650,18 +650,18 @@
 #if U_COMPILE
 # ifdef __cplusplus
 #   define uextern extern "C" IMPORT_LINK
-#   define uapi extern "C" EXPORT_LINK
+#   define API extern "C" EXPORT_LINK
 # else
 #   define uextern extern IMPORT_LINK
-#   define uapi extern EXPORT_LINK
+#   define API extern EXPORT_LINK
 # endif
 #else
 # ifdef __cplusplus
 #   define uextern extern "C" IMPORT_LINK
-#   define uapi extern "C" IMPORT_LINK
+#   define API extern "C" IMPORT_LINK
 # else
 #   define uextern extern IMPORT_LINK
-#   define uapi extern IMPORT_LINK
+#   define API extern IMPORT_LINK
 # endif
 #endif
 

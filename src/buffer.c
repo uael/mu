@@ -23,49 +23,31 @@
  * SOFTWARE.
  */
 
-#include <u/array.h>
+#include <u/buffer.h>
+#include <u/math.h>
 
-#define IS_POWER_OF2(n) ((n & (n - 1)) == 0)
-
-void __uarr_growup(void **arr, size_t n, size_t item_size) {
-  size_t *raw, *buffer, capacity;
-
-  if (n) {
-    if (*arr) {
-      raw = UARR_RAW(*arr);
-      if (raw[0] > raw[1] + n) {
-        return;
+size_t buf_alloc(buffer_t *self, const ssize_t nmin, const size_t isize) {
+  if (nmin > 0) {
+    if (self->cap) {
+      if (self->cap < nmin) {
+        if (ISPOW2(nmin)) {
+          self->cap = (size_t) nmin;
+        } else {
+          self->cap = self->cap;
+          do self->cap *= 2; while(self->cap < nmin);
+        }
+        self->data = realloc(self->data, isize * self->cap);
       }
-      if (IS_POWER_OF2(raw[1] + n)) {
-        raw[0] = raw[1] + n;
-      } else {
-        do raw[0] *= 2; while(raw[0] <= raw[1] + n);
-      }
-      buffer = realloc(raw, item_size * raw[0] + 8U * UARR_HEADER_SIZE);
     } else {
-      if (n == UARR_MIN_CAPACITY || (n > UARR_MIN_CAPACITY && IS_POWER_OF2(n))) {
-        capacity = n;
+      if (nmin == BUFFER_MIN_CAPACITY || (nmin > BUFFER_MIN_CAPACITY && ISPOW2(nmin))) {
+        self->cap = (size_t) nmin;
       } else {
-        capacity = UARR_MIN_CAPACITY;
-        while (capacity <= n) capacity *= 2;
+        self->cap = BUFFER_MIN_CAPACITY;
+        while (self->cap < nmin) self->cap *= 2;
       }
-      buffer = malloc(item_size * capacity + 8U * UARR_HEADER_SIZE);
-      buffer[0] = capacity;
-      buffer[1] = 0;
+      self->data = malloc(isize * self->cap);
     }
-    *arr = buffer + UARR_HEADER_SIZE;
+    return (size_t) nmin;
   }
-  return;
-}
-
-void __uarr_resize(void **arr, size_t size, size_t item_size) {
-  if (!(*arr) && size) {
-    __uarr_growup(arr, size, item_size);
-  }
-  else if (*arr && UARR_RAW_CAPACITY(*arr) < size) {
-    __uarr_growup(arr, size - UARR_RAW_SIZE(*arr), item_size);
-  }
-  if (*arr) {
-    UARR_RAW_SIZE(*arr) = size;
-  }
+  return 0;
 }
