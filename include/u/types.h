@@ -32,14 +32,27 @@
 
 #include "compiler.h"
 
-#include <stdarg.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <float.h>
-#include <limits.h>
+#ifdef __cplusplus
+# include <cstdarg>
+# include <cstdint>
+# include <cstddef>
+# include <cstdlib>
+# include <cfloat>
+# include <climits>
+#else
+# include <stdarg.h>
+# include <stdint.h>
+# include <stddef.h>
+# include <stdlib.h>
+# include <float.h>
+# include <limits.h>
+#endif
 #if !PLATFORM_WINDOWS
-# include <wchar.h>
+# ifdef __cplusplus
+#  include <cwchar>
+# else
+#  include <wchar.h>
+# endif
 #endif
 #if PLATFORM_PNACL || (PLATFORM_POSIX && !PLATFORM_APPLE)
 # include <sys/types.h>
@@ -55,7 +68,11 @@
 # define false	0
 # define __bool_true_false_are_defined	1
 #else
-# include <stdbool.h>
+# ifdef __cplusplus
+#  include <cstdbool>
+# else
+#  include <stdbool.h>
+# endif
 #endif
 
 #define FLOAT32_C(x) (x##f)
@@ -101,7 +118,11 @@ typedef float real;
 # define PRIXPTR      "IX"
 # define PRIsize      "Iu"
 #else
-# include <inttypes.h>
+# ifdef __cplusplus
+#  include <cinttypes>
+# else
+#  include <inttypes.h>
+# endif
 # define PRIsize      "zu"
 #endif
 

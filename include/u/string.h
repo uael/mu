@@ -30,5 +30,10 @@
 #ifndef  U_STRING_H__
 # define U_STRING_H__
 
+#ifdef __cplusplus
+# include <cstring>
+#else
+# include <string.h>
+#endif
 
 #endif /* U_STRING_H__ */

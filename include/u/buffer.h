@@ -48,7 +48,7 @@ struct buffer {
   buf_alloc((buffer_t *) &(buffer), ds_size(buffer) + (n), size)
 
 #define foreach(buffer, it_name) \
-  for (size_t it_name = 0; it < ds_size(buffer); ++it_name)
+  for (size_t it_name = 0; it < ds_size(buffer); ++(it_name))
 
 API size_t buf_alloc(buffer_t *self, const ssize_t nmin, const size_t isize);
 
