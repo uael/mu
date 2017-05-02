@@ -1,0 +1,17 @@
+set_languages("c++11")
+
+target("gtest")
+    set_kind("static")
+    add_links("pthread")
+    add_cxflags("-pthread")
+    add_ldflags("-pthread")
+    add_includedirs("gtest/googletest/include", "gtest/googletest")
+    add_files("gtest/googletest/src/gtest-all.cc")
+
+target("gtest_main")
+    set_kind("static")
+    add_links("pthread", "gtest")
+    add_cxflags("-pthread")
+    add_ldflags("-pthread")
+    add_includedirs("gtest/googletest/include", "gtest/googletest")
+    add_files("gtest/googletest/src/gtest_main.cc")
