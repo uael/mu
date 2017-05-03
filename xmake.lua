@@ -1,5 +1,5 @@
 set_project("libu")
-set_languages("c99")
+set_version("0.0.1")
 
 if is_mode("r") then
     set_symbols("hidden")
@@ -12,11 +12,13 @@ if is_mode("d") then
     set_optimize("none")
 end
 
--- libsvx.a & libsvx.so
 target("u")
+    set_default(true)
+    set_languages("c99")
     set_kind("$(kind)")
-    add_includedirs("include")
-    add_headers("include/*.h")
+    set_headerdir("$(buildir)/include/u")
+    add_headers("include/(u/*.h)")
+    add_includedirs("$(buildir)", "include")
     add_files("src/*.c")
 
 add_subdirs("vendor", "test")

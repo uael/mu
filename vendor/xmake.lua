@@ -1,6 +1,6 @@
-set_languages("c++11")
-
 target("gtest")
+    set_default(false)
+    set_languages("cxx11")
     set_kind("static")
     add_links("pthread")
     add_cxflags("-pthread")
@@ -9,6 +9,8 @@ target("gtest")
     add_files("gtest/googletest/src/gtest-all.cc")
 
 target("gtest_main")
+    set_default(false)
+    set_languages("cxx11")
     set_kind("static")
     add_links("pthread", "gtest")
     add_cxflags("-pthread")
