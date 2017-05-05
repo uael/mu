@@ -62,7 +62,7 @@ API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize) {
       self->data = realloc(self->data, isize * self->cap);
     }
     if (self->size > nmax) {
-      memset(self->data + nmax, 0, (self->size - nmax) * isize);
+      memset((char *) self->data + nmax * isize, 0, (self->size - nmax) * isize);
     }
     return (size_t) nmax;
   }
