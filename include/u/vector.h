@@ -37,6 +37,47 @@
     ds_super(T); \
   }
 
+/*!\def   vec_growth
+ * \brief Reserve storage for minimum given number of elements.
+ *        Never reduces storage and does not affect number of
+ *        currently stored elements.
+ * \param vector Vector structure
+ * \param nmin   Minimum given number of elements
+ */
+#define vec_growth(vector, nmin) \
+  ds_growth(vector, nmin, sizeof(*ds_data(vector)))
+
+/*!\def   vec_decay
+ * \brief Reserve storage for maximum given number of elements.
+ *        Reduces storage and affect number of
+ *        currently stored elements.
+ * \param vector Vector structure
+ * \param nmin   Maximum given number of elements
+ */
+#define vec_decay(vector, nmax) \
+  ds_decay(vector, nmax, sizeof(*ds_data(vector)))
+
+/*!\def   vec_grow
+ * \brief Add elements without initialization.
+ *        Allocates new storage if new size is larger than
+ *        vector cap. Value of expression is the expected size of the vector.
+ * \param vector Vector structure
+ * \param nmemb  Number of elements to grow
+ */
+#define vec_grow(vector, nmemb) \
+  ds_grow(vector, (nmemb), sizeof(*ds_data(vector)))
+
+/*!\def   vec_shrink
+ * \brief Remove elements without initialization.
+ *        Reallocates storage if new size is lower than
+ *        vector cap. Value of expression is the expected size of the vector.
+ *        Reduces storage and affect number of
+ *        currently stored elements.
+ * \param vector Vector structure
+ * \param nmemb  Number of elements to grow
+ */
+#define vec_shrink(vector, nmemb) \
+  ds_shrink(vector, (nmemb), sizeof(*ds_data(vector)))
 
 /*!\def   vec_dtor
  * \brief Deallocate vector memory and reset vector pointer to zero. Value of expression
@@ -48,25 +89,6 @@
     (ds_data(v) ? free(ds_data(v)) : (void) 0), \
     ds_data(v) = nullptr)
 
-/*!\def   vec_grow
- * \brief Add or remove elements without initialization, if size is positive or negative respectively.
- *        Sets new size to ds_size(vector)+num and allocates new storage if new size is larger than
- *        vector cap. Value of expression is the new size of the vector.
- * \param vector Vector structure
- * \param num    Number of elements to grow/shrink
- */
-#define vec_grow(vector, num) \
-  buf_grow(vector, (num), sizeof(*ds_data(vector)))
-
-/*!\def   vec_reserve
- * \brief Reserve storage for given number of elements. Never reduces storage and does not affect
- *        number of currently stored elements.
- * \param vector   Vector structure
- * \param cap New cap
- */
-#define vec_reserve(vector, cap) \
-  buf_reserve(vector, cap, sizeof(*ds_data(vector)))
-
 /*!\def   vec_resize
  * \brief Resize to given absolute size without initialization. Sets new size to num and allocate
  *        new storage if new size is larger than vector cap.
@@ -74,7 +96,7 @@
  * \param num    New size
  */
 #define vec_resize(vector, num) \
-  (ds_size(vector) = vec_reserve(vector, num))
+  (ds_size(vector) = vec_growth(vector, num))
 
 /*!\def   vec_copy
  * \brief Copy content of one vector to another, setting new destination vector size to source vector

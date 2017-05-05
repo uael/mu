@@ -144,11 +144,11 @@ TEST_F(VectorTest, reserve) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_reserve(v0, s0);
-  vec_reserve(v1, s1);
-  vec_reserve(v2, s2);
-  vec_reserve(v3, s3);
-  vec_reserve(v4, s4);
+  vec_growth(v0, s0);
+  vec_growth(v1, s1);
+  vec_growth(v2, s2);
+  vec_growth(v3, s3);
+  vec_growth(v4, s4);
 
   ASSERT_CAPACITY(q0, q1, q2, q3, q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
@@ -161,20 +161,20 @@ TEST_F(VectorTest, reserve) {
 
   qRoundUp32();
 
-  vec_reserve(v0, s0);
-  vec_reserve(v1, s1);
-  vec_reserve(v2, s2);
-  vec_reserve(v3, s3);
-  vec_reserve(v4, s4);
+  vec_growth(v0, s0);
+  vec_growth(v1, s1);
+  vec_growth(v2, s2);
+  vec_growth(v3, s3);
+  vec_growth(v4, s4);
 
   ASSERT_CAPACITY(q0, q1, q2, q3, q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_reserve(v0, -s0);
-  vec_reserve(v1, -s1);
-  vec_reserve(v2, -s2);
-  vec_reserve(v3, -s3);
-  vec_reserve(v4, -s4);
+  vec_growth(v0, -s0);
+  vec_growth(v1, -s1);
+  vec_growth(v2, -s2);
+  vec_growth(v3, -s3);
+  vec_growth(v4, -s4);
 
   ASSERT_CAPACITY(q0, q1, q2, q3, q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);

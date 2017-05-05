@@ -31,12 +31,22 @@
 
 #include "types.h"
 
+#ifndef DS_MIN_CAP
+# define DS_MIN_CAP 4
+#endif
+
 /*!\def ds_data
  * \param ds Data Structure
  */
 #define ds_super(T) \
   size_t cap, size; \
   T *data
+
+typedef struct ds ds_t;
+
+struct ds {
+  ds_super(void);
+};
 
 /*!\def   ds_cap
  * \brief Get cap of data structure in number of elements. Capacity indicates the size of the allocated
@@ -72,7 +82,43 @@
  */
 #define ds_back(ds) ds_at(ds, ds_size(ds) - 1)
 
-#include "buffer.h"
+/*!\def   ds_growth
+ * \brief Reserve storage for minimum given number of elements.
+ *        Never reduces storage and does not affect number of
+ *        currently stored elements.
+ * \param ds    Data structure
+ * \param nmin  Minimum given number of elements
+ * \param isize Item size
+ */
+#define ds_growth(ds, nmin, isize) \
+  ds_pgrowth((ds_t *) &(ds), (nmin), (isize))
+
+/*!\def   ds_decay
+ * \brief Reserve storage for maximum given number of elements.
+ *        Reduces storage and affect number of
+ *        currently stored elements.
+ * \param ds    Data structure
+ * \param nmin  Maximum given number of elements
+ * \param isize Item size
+ */
+#define ds_decay(ds, nmax, isize) \
+  ds_pdecay((ds_t *) &(ds), (nmax), (isize))
+
+#define ds_grow(ds, n, isize) \
+  ds_growth((ds), ds_size(ds) + (n), (isize))
+
+#define ds_shrink(ds, n, isize) \
+  ds_decay((ds), ds_size(ds) - (n), (isize))
+
+#define ds_trim(ds, isize) \
+  ds_decay((ds), ds_size(ds))
+
+#define foreach(ds, it_name) \
+  for (size_t it_name = 0; it < ds_size(ds); ++it_name)
+
+API size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize);
+API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize);
+
 #include "deque.h"
 #include "hash.h"
 #include "list.h"
