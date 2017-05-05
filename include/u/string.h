@@ -30,5 +30,6 @@
 #ifndef  U_STRING_H__
 # define U_STRING_H__
 
+#include <string.h>
 
 #endif /* U_STRING_H__ */

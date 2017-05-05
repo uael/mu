@@ -34,22 +34,7 @@
 typedef struct buffer buffer_t;
 
 struct buffer {
-  ds_super(void);
+  ds_super(void *);
 };
-
-#ifndef BUFFER_MIN_CAPACITY
-# define BUFFER_MIN_CAPACITY 4
-#endif
-
-#define buf_reserve(buffer, nmemb, size) \
-  buf_alloc((buffer_t *) &(buffer), (nmemb), size)
-
-#define buf_grow(buffer, n, size) \
-  buf_alloc((buffer_t *) &(buffer), ds_size(buffer) + (n), size)
-
-#define foreach(buffer, it_name) \
-  for (size_t it_name = 0; it < ds_size(buffer); ++it_name)
-
-API size_t buf_alloc(buffer_t *self, const ssize_t nmin, const size_t isize);
 
 #endif /* U_BUFFER_H__ */
