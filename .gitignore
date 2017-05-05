@@ -139,3 +139,11 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Clion
+.idea/
+cmake-build-debug/
+
+# xmake
+.xmake/
+build/
