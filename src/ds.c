@@ -52,7 +52,7 @@ size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize) {
   return 0;
 }
 
-API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize) {
+U_API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize) {
   size_t nearest_pow2;
 
   if (nmax >= 0) {

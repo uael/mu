@@ -116,8 +116,8 @@ struct ds {
 #define foreach(ds, it_name) \
   for (size_t it_name = 0; it < ds_size(ds); ++it_name)
 
-API size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize);
-API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize);
+U_API size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize);
+U_API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize);
 
 #include "deque.h"
 #include "hash.h"

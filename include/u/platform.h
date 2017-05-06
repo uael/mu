@@ -31,7 +31,7 @@
 # define U_PLATFORM_H__
 
 /*!\def U_COMPILE
- * \bried Defined to 1 when compiling the adt library,
+ * \bried Defined to 1 when compiling the u library,
  * undefined (or zero) when using the library
  */
 #ifndef U_COMPILE
@@ -649,19 +649,19 @@
 #endif
 #if U_COMPILE
 # ifdef __cplusplus
-#   define uextern extern "C" IMPORT_LINK
-#   define API extern "C" EXPORT_LINK
+#   define U_EXT extern "C" IMPORT_LINK
+#   define U_API extern "C" EXPORT_LINK
 # else
-#   define uextern extern IMPORT_LINK
-#   define API extern EXPORT_LINK
+#   define U_EXT extern IMPORT_LINK
+#   define U_API extern EXPORT_LINK
 # endif
 #else
 # ifdef __cplusplus
-#   define uextern extern "C" IMPORT_LINK
-#   define API extern "C" IMPORT_LINK
+#   define U_EXT extern "C" IMPORT_LINK
+#   define U_API extern "C" IMPORT_LINK
 # else
-#   define uextern extern IMPORT_LINK
-#   define API extern IMPORT_LINK
+#   define U_EXT extern IMPORT_LINK
+#   define U_API extern IMPORT_LINK
 # endif
 #endif
 

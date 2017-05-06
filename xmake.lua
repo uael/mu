@@ -20,5 +20,6 @@ target("u")
     add_headers("include/(u/*.h)")
     add_includedirs("$(buildir)", "include")
     add_files("src/*.c")
+    add_defines("U_COMPILE=1")
 
 add_subdirs("vendor", "test")
