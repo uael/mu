@@ -77,6 +77,11 @@ struct ds {
  */
 #define ds_front(ds) ds_at(ds, 0)
 
+/*!\def ds_empty
+ * \param ds Data Structure
+ */
+#define ds_empty(ds) (ds_size(ds) == 0)
+
 /*!\def ds_back
  * \param ds Data Structure
  */
