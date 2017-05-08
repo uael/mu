@@ -3,7 +3,6 @@ version: "{build}"
 platform:
   - Win32
   - x64
-  - ARM
 
 environment:
   MSVC_DEFAULT_OPTIONS: ON
