@@ -495,63 +495,81 @@
 #   error Unknown Apple Platform
 # endif
 #elif defined(_WIN32) || defined(__WIN32__) || defined(_WIN64)
-#  undef  PLATFORM_WINDOWS
-#  define PLATFORM_WINDOWS 1
-#  define PLATFORM_NAME "Windows"
-#  if defined(__x86_64__) || defined(_M_AMD64) || defined(_AMD64_)
-#    undef  ARCH_X86_64
-#    define ARCH_X86_64 1
-#    define PLATFORM_DESCRIPTION "Windows x86-64"
-#  elif defined(__x86__) || defined(_M_IX86) || defined(_X86_)
-#    undef  ARCH_X86
-#    define ARCH_X86 1
-#    define PLATFORM_DESCRIPTION "Windows x86"
-#  elif defined(__ia64__) || defined(_M_IA64) || defined(_IA64_)
-#    undef  ARCH_IA64
-#    define ARCH_IA64 1
-#    define PLATFORM_DESCRIPTION "Windows IA-64"
-#  else
-#    error Unknown architecture
-#  endif
-#  undef  ARCH_ENDIAN_LITTLE
-#  define ARCH_ENDIAN_LITTLE 1
-#  undef  PLATFORM_DESKTOP
-#  define PLATFORM_DESKTOP 1
+# undef  PLATFORM_WINDOWS
+# define PLATFORM_WINDOWS 1
+# define PLATFORM_NAME "Windows"
+# if defined(__x86_64__) || defined(_M_AMD64) || defined(_AMD64_)
+#   undef  ARCH_X86_64
+#   define ARCH_X86_64 1
+#   define PLATFORM_DESCRIPTION "Windows x86-64"
+# elif defined(__x86__) || defined(_M_IX86) || defined(_X86_)
+#   undef  ARCH_X86
+#   define ARCH_X86 1
+#   define PLATFORM_DESCRIPTION "Windows x86"
+# elif defined(__ia64__) || defined(_M_IA64) || defined(_IA64_)
+#   undef  ARCH_IA64
+#   define ARCH_IA64 1
+#   define PLATFORM_DESCRIPTION "Windows IA-64"
+# elif defined(_M_ARM)
+#   undef  ARCH_ARM
+#   define ARCH_ARM 1
+#   if _M_ARM == 5
+#     undef  ARCH_ARM5
+#     define ARCH_ARM5 1
+#     define PLATFORM_DESCRIPTION "Windows ARMv5"
+#   elif _M_ARM == 6
+#     undef  ARCH_ARM6
+#     define ARCH_ARM6 1
+#     define PLATFORM_DESCRIPTION "Windows ARMv6"
+#   elif _M_ARM == 7
+#     undef  ARCH_ARM7
+#     define ARCH_ARM7 1
+#     define PLATFORM_DESCRIPTION "Windows ARMv7"
+#   else
+#     error Unknown ARM architecture
+#   endif
+# else
+#   error Unknown architecture
+# endif
+# undef  ARCH_ENDIAN_LITTLE
+# define ARCH_ENDIAN_LITTLE 1
+# undef  PLATFORM_DESKTOP
+# define PLATFORM_DESKTOP 1
 #elif defined(__BSD__) || defined(__FreeBSD__)
-#  undef  PLATFORM_BSD
-#  define PLATFORM_BSD 1
-#  undef  PLATFORM_POSIX
-#  define PLATFORM_POSIX 1
-#  define PLATFORM_NAME "BSD"
-#  if defined(__x86_64__) || defined(__x86_64) || defined(__amd64)
-#    undef  ARCH_X86_64
-#    define ARCH_X86_64 1
-#    undef  ARCH_ENDIAN_LITTLE
-#    define ARCH_ENDIAN_LITTLE 1
-#    define PLATFORM_DESCRIPTION "BSD x86-64"
-#  elif defined(__i386__) || defined(__intel__) || defined(_M_IX86)
-#    undef  ARCH_X86
-#    define ARCH_X86 1
-#    undef  ARCH_ENDIAN_LITTLE
-#    define ARCH_ENDIAN_LITTLE 1
-#    define PLATFORM_DESCRIPTION "BSD x86"
-#  elif defined(__powerpc64__) || defined(__POWERPC64__)
-#    undef  ARCH_PPC_64
-#    define ARCH_PPC_64 1
-#    undef  ARCH_ENDIAN_BIG
-#    define ARCH_ENDIAN_BIG 1
-#    define PLATFORM_DESCRIPTION "BSD PPC64"
-#  elif defined(__powerpc__) || defined(__POWERPC__)
-#    undef  ARCH_PPC
-#    define ARCH_PPC 1
-#    undef  ARCH_ENDIAN_BIG
-#    define ARCH_ENDIAN_BIG 1
-#    define PLATFORM_DESCRIPTION "BSD PPC"
-#  else
-#    error Unknown architecture
-#  endif
-#  undef  PLATFORM_DESKTOP
-#  define PLATFORM_DESKTOP 1
+# undef  PLATFORM_BSD
+# define PLATFORM_BSD 1
+# undef  PLATFORM_POSIX
+# define PLATFORM_POSIX 1
+# define PLATFORM_NAME "BSD"
+# if defined(__x86_64__) || defined(__x86_64) || defined(__amd64)
+#   undef  ARCH_X86_64
+#   define ARCH_X86_64 1
+#   undef  ARCH_ENDIAN_LITTLE
+#   define ARCH_ENDIAN_LITTLE 1
+#   define PLATFORM_DESCRIPTION "BSD x86-64"
+# elif defined(__i386__) || defined(__intel__) || defined(_M_IX86)
+#   undef  ARCH_X86
+#   define ARCH_X86 1
+#   undef  ARCH_ENDIAN_LITTLE
+#   define ARCH_ENDIAN_LITTLE 1
+#   define PLATFORM_DESCRIPTION "BSD x86"
+# elif defined(__powerpc64__) || defined(__POWERPC64__)
+#   undef  ARCH_PPC_64
+#   define ARCH_PPC_64 1
+#   undef  ARCH_ENDIAN_BIG
+#   define ARCH_ENDIAN_BIG 1
+#   define PLATFORM_DESCRIPTION "BSD PPC64"
+# elif defined(__powerpc__) || defined(__POWERPC__)
+#   undef  ARCH_PPC
+#   define ARCH_PPC 1
+#   undef  ARCH_ENDIAN_BIG
+#   define ARCH_ENDIAN_BIG 1
+#   define PLATFORM_DESCRIPTION "BSD PPC"
+# else
+#   error Unknown architecture
+# endif
+# undef  PLATFORM_DESKTOP
+# define PLATFORM_DESKTOP 1
 #elif defined(__linux__) || defined(__linux)
 # undef  PLATFORM_LINUX
 # define PLATFORM_LINUX 1
