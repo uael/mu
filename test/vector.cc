@@ -1,10 +1,10 @@
-#include <time.h>
+#include <ctime>
 #include <random>
 
 #include <gtest/gtest.h>
 
-#include <u/vector.h>
-#include <u/math.h>
+#include "u/vector.h"
+#include "u/math.h"
 
 #define VECTOR_DUMP(n) "vector[size='" << ds_size(v ## n) << "', capacity='" << ds_cap(v ## n) << "']"
 #define ASSERT_CAPACITY(_q0, _q1, _q2, _q3, _q4) \

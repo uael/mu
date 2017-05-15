@@ -23,4 +23,4 @@
  * SOFTWARE.
  */
 
-#include <u/vector.h>
+#include "u/vector.h"

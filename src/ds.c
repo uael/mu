@@ -23,9 +23,9 @@
  * SOFTWARE.
  */
 
-#include <u/ds.h>
-#include <u/string.h>
-#include <u/math.h>
+#include "u/ds.h"
+#include "u/string.h"
+#include "u/math.h"
 
 size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize) {
   if (nmin > 0) {

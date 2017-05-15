@@ -23,4 +23,4 @@
  * SOFTWARE.
  */
 
-#include <u/deque.h>
+#include "u/deque.h"
