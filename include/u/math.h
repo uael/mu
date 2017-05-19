@@ -37,13 +37,13 @@
  */
 #define ISPOW2(n) (((n) & -(n)) == (n))
 
-U_API FORCEINLINE CONSTCALL bool ispow2(const long n) {
+FORCEINLINE CONSTCALL bool ispow2(const long n) {
   return ISPOW2(n);
 }
 
 #define ROUNDUP32(x) (--(x), (x)|=(x)>>1, (x)|=(x)>>2, (x)|=(x)>>4, (x)|=(x)>>8, (x)|=(x)>>16, ++(x))
 
-U_API FORCEINLINE CONSTCALL size_t roundup32(size_t n) {
+FORCEINLINE CONSTCALL size_t roundup32(size_t n) {
   size_t j;
   return ISPOW2(n) ? n : (
     ((j = n & 0xFFFF0000) || (j = n)),

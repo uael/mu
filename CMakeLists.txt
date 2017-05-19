@@ -27,7 +27,6 @@ endif()
 set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(u_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
 set(u_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
-set(u_VENDOR_DIR  ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
 file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
@@ -40,8 +39,6 @@ if(WIN32)
 else()
     target_link_libraries(${PROJECT_NAME} LINK_PUBLIC m)
 endif()
-
-add_subdirectory(${u_VENDOR_DIR})
 
 enable_testing()
 add_subdirectory(${u_TEST_DIR})

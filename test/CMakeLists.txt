@@ -1,18 +1,9 @@
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+file(GLOB ctest_SOURCES ${ctest_SOURCES} ${CMAKE_CURRENT_LIST_DIR}/*.c)
 
-if(CMAKE_VERSION VERSION_LESS "3.1")
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
-    endif()
-else()
-    set(CMAKE_CXX_STANDARD 11)
-endif()
-
-file(GLOB check_SOURCES ${check_SOURCES} ${CMAKE_CURRENT_LIST_DIR}/*.cc)
-
-add_executable(tests ${check_SOURCES})
-add_dependencies(tests ${PROJECT_NAME} gtest gtest_main)
-target_link_libraries(tests gtest gtest_main)
-target_link_libraries(tests ${PROJECT_NAME})
-
-add_test(check tests)
+foreach(ctest_src ${ctest_SOURCES})
+    get_filename_component(ctest_name ${ctest_src} NAME_WE)
+    add_executable(${ctest_name}_test ${ctest_src})
+    add_dependencies(${ctest_name}_test ${PROJECT_NAME})
+    target_link_libraries(${ctest_name}_test ${PROJECT_NAME})
+    add_test(${ctest_name} ${ctest_name}_test)
+endforeach()
