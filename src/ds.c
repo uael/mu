@@ -29,25 +29,27 @@
 
 size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize) {
   if (nmin > 0) {
+    size_t unmin = (size_t) nmin;
+
     if (self->cap) {
-      if (self->cap < nmin) {
-        if (ISPOW2(nmin)) {
-          self->cap = (size_t) nmin;
+      if (self->cap < unmin) {
+        if (ISPOW2(unmin)) {
+          self->cap = unmin;
         } else {
-          do self->cap *= 2; while(self->cap < nmin);
+          do self->cap *= 2; while(self->cap < unmin);
         }
         self->data = realloc(self->data, isize * self->cap);
       }
     } else {
-      if (nmin == DS_MIN_CAP || (nmin > DS_MIN_CAP && ISPOW2(nmin))) {
-        self->cap = (size_t) nmin;
+      if (unmin == DS_MIN_CAP || (unmin > DS_MIN_CAP && ISPOW2(unmin))) {
+        self->cap = unmin;
       } else {
         self->cap = DS_MIN_CAP;
-        while (self->cap < nmin) self->cap *= 2;
+        while (self->cap < unmin) self->cap *= 2;
       }
       self->data = malloc(isize * self->cap);
     }
-    return (size_t) nmin;
+    return unmin;
   }
   return 0;
 }
@@ -56,15 +58,17 @@ U_API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize) {
   size_t nearest_pow2;
 
   if (nmax >= 0) {
-    nearest_pow2 = roundup32((size_t) nmax);
+    size_t unmax = (size_t) nmax;
+
+    nearest_pow2 = roundup32((size_t) unmax);
     if (self->cap > nearest_pow2) {
       self->cap = nearest_pow2;
       self->data = realloc(self->data, isize * self->cap);
     }
-    if (self->size > nmax) {
-      memset((char *) self->data + nmax * isize, 0, (self->size - nmax) * isize);
+    if (self->size > unmax) {
+      memset((char *) self->data + unmax * isize, 0, (self->size - unmax) * isize);
     }
-    return (size_t) nmax;
+    return unmax;
   }
   return 0;
 }

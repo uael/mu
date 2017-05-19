@@ -9,6 +9,20 @@ else()
     set(CMAKE_C_STANDARD 99)
 endif()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+if(MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W2")
+else()
+    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g3 -DDEBUG")
+    else()
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+    endif()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wextra -Werror -fomit-frame-pointer")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-missing-field-initializers -Wno-unused-parameter -Wno-unused-function")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable -Wno-unused-value -Wno-unused-result")
+endif()
+
 if(MSVC)
     set(CMAKE_FLAGS
         CMAKE_CXX_FLAGS

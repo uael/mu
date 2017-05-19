@@ -76,7 +76,10 @@ FORCEINLINE CONSTCALL const char *test_run(test_t *self, const char *(*test_fn)(
   return result;
 }
 
-#define ASSERT(expr) do { if (!(expr)) return #expr; } while(false)
+#define S1(x) #x
+#define S2(x) S1(x)
+#define LOCATION __FILE__ ":" S2(__LINE__)
+#define ASSERT(expr) do { if (!(expr)) { return LOCATION " -> " #expr; } } while(false)
 #define TESTFN(suite, name) suite ## _ ## name ## _test
 #define TEST(suite, name) static const char *TESTFN(suite, name)(test_t *self)
 #define TEST_PADDING "..................................."

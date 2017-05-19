@@ -151,6 +151,8 @@ TEST(vector, grow) {
 
   ASSERT_CAPACITY((self->q0 ? self->q0 : UVEC_MIN_CAPACITY), self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
+
+  return NULL;
 }
 
 TEST(vector, reserve) {
@@ -191,6 +193,8 @@ TEST(vector, reserve) {
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
+
+  return NULL;
 }
 
 TEST(vector, resize) {
@@ -241,4 +245,6 @@ TEST(vector, resize) {
 
   ASSERT_CAPACITY((self->q0 ? self->q0 : UVEC_MIN_CAPACITY), self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
+
+  return NULL;
 }
