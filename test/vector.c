@@ -1,4 +1,4 @@
-#include "test.h"
+#include "ctest.h"
 
 #include "u/math.h"
 #include "u/vector.h"
@@ -15,7 +15,7 @@ typedef vec_of(struct { int x; int y; }) v2_t;
 typedef vec_of(point_t) v3_t;
 typedef vec_of(void *) v4_t;
 
-TEST_DATA {
+CTEST_DATA {
   v0_t v0;
   v1_t v1;
   v2_t v2;
@@ -29,7 +29,7 @@ TEST_DATA {
   size_t s4, q4;
 };
 
-static void test_qroudup32(TEST_DATA *self) {
+static void test_qroudup32(CTEST_DATA *self) {
   self->q0 = roundup32(self->s0);
   self->q1 = roundup32(self->s1);
   self->q2 = roundup32(self->s2);
@@ -39,7 +39,7 @@ static void test_qroudup32(TEST_DATA *self) {
   if (self->q0 && self->q0 < UVEC_MIN_CAPACITY) self->q0 = UVEC_MIN_CAPACITY;
 }
 
-TEST_SETUP {
+CTEST_SETUP {
   srand((unsigned) time(NULL));
 
   self->s0 = (size_t) (rand() % 10);
@@ -57,7 +57,7 @@ TEST_SETUP {
   self->v4 = (v4_t) {0};
 }
 
-TEST_TEARDOWN {
+CTEST_TEARDOWN {
   vec_dtor(self->v0);
   vec_dtor(self->v1);
   vec_dtor(self->v2);
@@ -65,16 +65,16 @@ TEST_TEARDOWN {
   vec_dtor(self->v4);
 }
 
-TEST(vector, grow);
-TEST(vector, reserve);
-TEST(vector, resize);
+CTEST(vector, grow);
+CTEST(vector, reserve);
+CTEST(vector, resize);
 
 int main(void) {
-  TEST_DATA test = {0};
+  CTEST_DATA test = {0};
 
-  TEST_RUN(vector, grow);
-  TEST_RUN(vector, reserve);
-  TEST_RUN(vector, resize);
+  CTEST_RUN(vector, grow);
+  CTEST_RUN(vector, reserve);
+  CTEST_RUN(vector, resize);
 
   return EXIT_SUCCESS;
 }
@@ -85,7 +85,7 @@ int main(void) {
     ASSERT(_q2 == ds_cap(self->v2)); \
     ASSERT(_q3 == ds_cap(self->v3)); \
     ASSERT(_q4 == ds_cap(self->v4)); \
-  } while (0);
+  } while (false)
 
 #define ASSERT_SIZE(_s0, _s1, _s2, _s3, _s4) do { \
     ASSERT(_s0 == ds_size(self->v0)); \
@@ -93,9 +93,9 @@ int main(void) {
     ASSERT(_s2 == ds_size(self->v2)); \
     ASSERT(_s3 == ds_size(self->v3)); \
     ASSERT(_s4 == ds_size(self->v4)); \
-  } while (0);
+  } while (false)
 
-TEST(vector, grow) {
+CTEST(vector, grow) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
@@ -155,7 +155,7 @@ TEST(vector, grow) {
   return NULL;
 }
 
-TEST(vector, reserve) {
+CTEST(vector, reserve) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
@@ -197,7 +197,7 @@ TEST(vector, reserve) {
   return NULL;
 }
 
-TEST(vector, resize) {
+CTEST(vector, resize) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 

@@ -23,14 +23,16 @@
  * SOFTWARE.
  */
 
-#ifndef  U_TEST_H__
-# define U_TEST_H__
+#ifndef  U_CTEST_H__
+# define U_CTEST_H__
 
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
 
 #include "u/compiler.h"
+#include "u/string.h"
+#include "u/types.h"
 
 #if PLATFORM_POSIX
 # define RESET   "\033[0m"
@@ -56,42 +58,42 @@
 # define BOLD
 #endif
 
-#define TEST_DATA struct test
+#define CTEST_DATA struct ctest
+typedef CTEST_DATA ctest_t;
 
-typedef TEST_DATA test_t;
-
-#define TEST_SETUP void test_setup(test_t *self)
-#define TEST_TEARDOWN void test_teardown(test_t *self)
-
-TEST_SETUP;
-TEST_TEARDOWN;
-
-FORCEINLINE CONSTCALL const char *test_run(test_t *self, const char *(*test_fn)(test_t *)) {
-  const char *result;
-
-  test_setup(self);
-  result = test_fn(self);
-  test_teardown(self);
-
-  return result;
-}
+#define CTEST_SETUP void test_setup(ctest_t *self)
+#define CTEST_TEARDOWN void test_teardown(ctest_t *self)
 
 #define S1(x) #x
 #define S2(x) S1(x)
 #define LOCATION __FILE__ ":" S2(__LINE__)
-#define ASSERT(expr) do { if (!(expr)) { return LOCATION " -> " #expr; } } while(false)
-#define TESTFN(suite, name) suite ## _ ## name ## _test
-#define TEST(suite, name) static const char *TESTFN(suite, name)(test_t *self)
-#define TEST_PADDING "..................................."
-#define TEST_RUN(suite, name) do { \
-    const char *__result; \
-    int __s = sizeof(TEST_PADDING) - sizeof(#suite ":" #name) - 2; \
-    printf("Test:     %s %*.*s   ", #suite ":" #name, __s, __s, TEST_PADDING); \
-    if ((__result = test_run(&test, TESTFN(suite, name)))) { \
-      printf(RED "[FAILED] ‘%s’" RESET "\n", __result); \
-      return EXIT_FAILURE; \
-    } \
-    puts(GREEN "[OK]" RESET); \
-  } while (false) \
+#define ASSERT(expr) do if (!(expr)) return LOCATION " -> " #expr; while (false)
 
-#endif /* U_TEST_H__ */
+#define CTEST_PADDING "................................."
+#define CTEST_FN(suite, name) suite ## _ ## name ## _test
+#define CTEST_RUN(suite, name) \
+  do if (test_run(&test, #suite ":" #name, sizeof(#suite ":" #name)-1, CTEST_FN(suite, name)) == EXIT_FAILURE) \
+      return EXIT_FAILURE; \
+  while (false)
+#define CTEST(suite, name) static const char *CTEST_FN(suite, name)(ctest_t *self)
+
+CTEST_SETUP;
+CTEST_TEARDOWN;
+
+FORCEINLINE CONSTCALL int test_run(ctest_t *self, const char *id, unsigned id_len, const char *(*test_fn)(ctest_t *)) {
+  const char *result;
+  int s = sizeof(CTEST_PADDING) - id_len - 1;
+
+  printf("Test:     %s %*.*s   ", id, s, s, CTEST_PADDING);
+  test_setup(self);
+  result = test_fn(self);
+  test_teardown(self);
+  if (result) {
+    printf(RED "[FAILED] ‘%s’" RESET "\n", result);
+    return EXIT_FAILURE;
+  }
+  puts(GREEN "[OK]" RESET);
+  return EXIT_SUCCESS;
+}
+
+#endif /* U_CTEST_H__ */
