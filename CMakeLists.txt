@@ -42,11 +42,12 @@ set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(u_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
 set(u_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
 
-file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
+file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/u/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
 
 include_directories(${u_INCLUDE_DIR})
 add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${u_HEADERS}")
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} LINK_PUBLIC winmm)
@@ -57,9 +58,8 @@ endif()
 enable_testing()
 add_subdirectory(${u_TEST_DIR})
 
-
 install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION bin COMPONENT runtime
-    ARCHIVE DESTINATION lib COMPONENT devel
-    PUBLIC_HEADER DESTINATION include COMPONENT devel
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION include/u
 )
