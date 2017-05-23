@@ -42,7 +42,7 @@ set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(u_SOURCE_DIR  ${CMAKE_CURRENT_LIST_DIR}/src)
 set(u_TEST_DIR    ${CMAKE_CURRENT_LIST_DIR}/test)
 
-file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/u/*.h)
+file(GLOB u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/${PROJECT_NAME}/*.h)
 file(GLOB u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
 
 include_directories(${u_INCLUDE_DIR})
