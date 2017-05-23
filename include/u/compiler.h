@@ -213,6 +213,7 @@
 # define DEPRECATED __declspec(deprecated)
 # define FORCEINLINE __forceinline
 # define NOINLINE __declspec(noinline)
+# define NORETURN __declspec(noreturn)
 # define PURECALL
 # define CONSTCALL
 # define PRINTFCALL(start, num)
@@ -222,8 +223,6 @@
 # define LIKELY(x) (x)
 # define UNLIKELY(x) (x)
 # pragma warning(disable : 4018)
-# pragma warning(disable : 4054)
-# pragma warning(disable : 4055)
 # pragma warning(disable : 4127)
 # pragma warning(disable : 4132)
 # pragma warning(disable : 4146)

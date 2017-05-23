@@ -11,7 +11,7 @@ endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 if(MSVC)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W2")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3")
 else()
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g3 -DDEBUG")
