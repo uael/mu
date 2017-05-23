@@ -56,3 +56,10 @@ endif()
 
 enable_testing()
 add_subdirectory(${u_TEST_DIR})
+
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION bin COMPONENT runtime
+    ARCHIVE DESTINATION lib COMPONENT devel
+    PUBLIC_HEADER DESTINATION include COMPONENT devel
+)
