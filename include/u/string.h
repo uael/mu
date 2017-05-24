@@ -24,7 +24,6 @@
  */
 
 /*!\file string.h
- * \author Mattias Jansson <www.github.com/rampantpixels>
  * \author Lucas Abel <www.github.com/uael>
  */
 #ifndef  U_STRING_H__
