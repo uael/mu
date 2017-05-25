@@ -343,7 +343,7 @@
 #   define INSTANTIATE
 # endif
 #elif HAS_ATTRIBUTE(always_inline)
-# define FORCEINLINE __attribute__(__always_inline__) inline
+# define FORCEINLINE __attribute__((__always_inline__)) inline
 #elif COMPILER_MSVC || COMPILER_INTEL
 # define FORCEINLINE __forceinline
 #else
