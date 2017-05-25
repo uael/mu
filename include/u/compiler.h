@@ -299,7 +299,7 @@
 # define thread_local _Thread_local
 #endif
 
-#if COMPILER_GCC && (__GNUC__ >= 3 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 70))
+#if HAS_ATTRIBUTE(noreturn) || (COMPILER_GCC && (__GNUC__ >= 3 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 70)))
 # define NORETURN __attribute__((__noreturn__))
 #elif defined(__STDC__) && __STDC_VERSION__ >= 201112L
 # define NORETURN _Noreturn
