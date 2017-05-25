@@ -1,4 +1,5 @@
-#include "ctest.h"
+#include <time.h>
+#include "cute.h"
 
 #include "u/math.h"
 #include "u/vector.h"
@@ -15,7 +16,7 @@ typedef vec_of(struct { int x; int y; }) v2_t;
 typedef vec_of(point_t) v3_t;
 typedef vec_of(void *) v4_t;
 
-CTEST_DATA {
+CUTEST_DATA {
   v0_t v0;
   v1_t v1;
   v2_t v2;
@@ -29,7 +30,7 @@ CTEST_DATA {
   size_t s4, q4;
 };
 
-static void test_qroudup32(CTEST_DATA *self) {
+static void test_qroudup32(CUTEST_DATA *self) {
   self->q0 = roundup32(self->s0);
   self->q1 = roundup32(self->s1);
   self->q2 = roundup32(self->s2);
@@ -39,7 +40,7 @@ static void test_qroudup32(CTEST_DATA *self) {
   if (self->q0 && self->q0 < UVEC_MIN_CAPACITY) self->q0 = UVEC_MIN_CAPACITY;
 }
 
-CTEST_SETUP {
+CUTEST_SETUP {
   srand((unsigned) time(NULL));
 
   self->s0 = (size_t) (rand() % 10);
@@ -57,7 +58,7 @@ CTEST_SETUP {
   self->v4 = (v4_t) {0};
 }
 
-CTEST_TEARDOWN {
+CUTEST_TEARDOWN {
   vec_dtor(self->v0);
   vec_dtor(self->v1);
   vec_dtor(self->v2);
@@ -65,16 +66,16 @@ CTEST_TEARDOWN {
   vec_dtor(self->v4);
 }
 
-CTEST(vector, grow);
-CTEST(vector, reserve);
-CTEST(vector, resize);
+CUTEST(vector, grow);
+CUTEST(vector, reserve);
+CUTEST(vector, resize);
 
 int main(void) {
-  CTEST_DATA test = {0};
+  CUTEST_DATA test = {0};
 
-  CTEST_RUN(vector, grow);
-  CTEST_RUN(vector, reserve);
-  CTEST_RUN(vector, resize);
+  CUTEST_PASS(vector, grow);
+  CUTEST_PASS(vector, reserve);
+  CUTEST_PASS(vector, resize);
 
   return EXIT_SUCCESS;
 }
@@ -95,7 +96,7 @@ int main(void) {
     ASSERT(_s4 == ds_size(self->v4)); \
   } while (false)
 
-CTEST(vector, grow) {
+CUTEST(vector, grow) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
@@ -155,7 +156,7 @@ CTEST(vector, grow) {
   return NULL;
 }
 
-CTEST(vector, reserve) {
+CUTEST(vector, reserve) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
@@ -197,7 +198,7 @@ CTEST(vector, reserve) {
   return NULL;
 }
 
-CTEST(vector, resize) {
+CUTEST(vector, resize) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
