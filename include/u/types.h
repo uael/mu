@@ -62,18 +62,7 @@
 # define nullptr NULL
 #endif
 
-#if !defined(__cplusplus) && COMPILER_MSVC && COMPILER_VERSION < 1900
-# define bool	unsigned char
-# define true	1
-# define false	0
-# define __bool_true_false_are_defined	1
-#else
-# ifdef __cplusplus
-#  include <cstdbool>
-# else
-#  include <stdbool.h>
-# endif
-#endif
+#include "stdbool.h"
 
 #define FLOAT32_C(x) (x##f)
 #define FLOAT64_C(x) (x)
