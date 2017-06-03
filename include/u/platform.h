@@ -662,7 +662,7 @@
 # define EXPORT_LINK __declspec(dllexport)
 # define IMPORT_LINK __declspec(dllimport)
 #else
-# define EXPORT_LINK
+# define EXPORT_LINK __attribute__((visibility("default")))
 # define IMPORT_LINK
 #endif
 #if U_COMPILE

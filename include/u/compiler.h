@@ -399,10 +399,11 @@
 #endif
 
 #if COMPILER_CLANG
-# define PRINTFCALL(start, num) ATTR4(format, printf, start, num)
-# define ALIGN(alignment) ATTR2(aligned, alignment)
+# define PRINTFCALL(start, num) __attribute__((format(printf, start, num)))
+# define ALIGN(alignment) __attribute__((__aligned__(alignment)))
 # define alignof(type) __alignof__(type)
-# define ALIGNED_STRUCT(name, alignment) struct __attribute__((__aligned__(alignment))) name
+# define ALIGNED(declaration, alignment) declaration ALIGN(alignment)
+# define PACKED(declaration) declaration __attribute__((__packed__))
 # define LIKELY(x) __builtin_expect(!!(x), 1)
 # define UNLIKELY(x) __builtin_expect(!!(x), 0)
 # if PLATFORM_WINDOWS
@@ -423,24 +424,13 @@
 #     define __MSVCRT_VERSION__ 0x0800
 #   endif
 #   define USE_NO_MINGW_SETJMP_TWO_ARGS 1
-#   if __has_warning("-Wunknown-pragmas")
-#     pragma clang diagnostic ignored "-Wunknown-pragmas"
-#   endif
-#   if __has_warning("-Wformat-non-iso")
-#     pragma clang diagnostic ignored "-Wformat-non-iso"
-#   endif
-# endif
-# if __has_warning("-Wreserved-id-macro")
-#   pragma clang diagnostic ignored "-Wreserved-id-macro"
-# endif
-# if __has_warning("-Wcovered-switch-default")
-#   pragma clang diagnostic ignored "-Wcovered-switch-default"
 # endif
 #elif COMPILER_INTEL
 # define PRINTFCALL(start, num)
 # define ALIGN(alignment) __declspec(align(alignment))
 # define alignof(type) __alignof(type)
-# define ALIGNED_STRUCT(name, alignment) ALIGN(alignment) struct name
+# define ALIGNED(declaration, alignment) declaration ALIGN(alignment)
+# define PACKED(declaration) __pragma(pack(push, 1)) declaration __pragma(pack(pop))
 # define LIKELY(x) __builtin_expect(!!(x), 1)
 # define UNLIKELY(x) __builtin_expect(!!(x), 0)
 # if PLATFORM_WINDOWS
@@ -452,7 +442,8 @@
 # define PRINTFCALL(start, num)
 # define ALIGN(alignment) __declspec(align(alignment))
 # define alignof(type) __alignof(type)
-# define ALIGNED_STRUCT(name, alignment) ALIGN(alignment) struct name
+# define ALIGNED(declaration, alignment) declaration ALIGN(alignment)
+# define PACKED(declaration) __pragma(pack(push, 1)) declaration __pragma(pack(pop))
 # define LIKELY(x) (x)
 # define UNLIKELY(x) (x)
 # pragma warning(disable : 4018)
@@ -482,10 +473,11 @@
 # endif
 # include <intrin.h>
 #elif COMPILER_GCC
-# define PRINTFCALL(start, num) ATTR4(format, printf, start, num)
-# define ALIGN(alignment) ATTR2(aligned, alignment)
+# define PRINTFCALL(start, num) __attribute__((format(printf, start, num)))
+# define ALIGN(alignment) __attribute__((__aligned__(alignment)))
 # define alignof(type) __alignof__(type)
-# define ALIGNED_STRUCT(name, alignment) struct ALIGN(alignment) name
+# define ALIGNED(declaration, alignment) declaration __attribute__((__aligned__(alignment)))
+# define PACKED(declaration) declaration __attribute__((__packed__))
 # define LIKELY(x) __builtin_expect(!!(x), 1)
 # define UNLIKELY(x) __builtin_expect(!!(x), 0)
 # if COMPILER_VERSION >= 40600UL
@@ -505,9 +497,6 @@
 #   ifndef __MSVCRT_VERSION__
 #     define __MSVCRT_VERSION__ 0x0800
 #   endif
-#   pragma GCC diagnostic ignored "-Wformat"
-#   pragma GCC diagnostic ignored "-Wformat-extra-args"
-#   pragma GCC diagnostic ignored "-Wpedantic"
 # endif
 #endif
 
