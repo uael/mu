@@ -39,6 +39,7 @@
 # include <cstdlib>
 # include <cfloat>
 # include <climits>
+# include <ctype.h>
 #else
 # include <stdarg.h>
 # include <stdint.h>
@@ -46,6 +47,7 @@
 # include <stdlib.h>
 # include <float.h>
 # include <limits.h>
+# include <ctype.h>
 #endif
 #if !PLATFORM_WINDOWS
 # ifdef __cplusplus
