@@ -25,12 +25,12 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <u/math.h>
 
 #include "u/string.h"
 
-#define ustrhsize(flags) ustrhsizes[(flags) & USTR_TYPE_MASK]
+#define ustrhsize(flags) ustrhsizes[(size_t)(flags)]
 static const uint8_t ustrhsizes[5] = {
-  sizeof(ustrh5_t),
   sizeof(ustrh8_t),
   sizeof(ustrh16_t),
   sizeof(ustrh32_t),
@@ -38,8 +38,6 @@ static const uint8_t ustrhsizes[5] = {
 };
 
 static FORCEINLINE uint8_t ustrtype(size_t ustrsize) {
-  if (ustrsize < 1 << 5)
-    return USTR_TYPE_5;
   if (ustrsize < 1 << 8)
     return USTR_TYPE_8;
   if (ustrsize < 1 << 16)
@@ -51,14 +49,11 @@ static FORCEINLINE uint8_t ustrtype(size_t ustrsize) {
   return USTR_TYPE_64;
 }
 
-#define USTR_PFLAGS(s) (((uint8_t *) (s)) - 1)
-#define USTR_FLAGS(s) *USTR_PFLAGS(s)
+#define USTR_PTYPE(s) (((uint8_t *) (s)) - 1)
+#define USTR_TYPE(s) *USTR_PTYPE(s)
 
 #define USTR_SET_LEN(s, n) do { \
-    switch (USTR_FLAGS(s) & USTR_TYPE_MASK) { \
-      case USTR_TYPE_5: \
-        *(((uint8_t *) (s)) - 1) = (uint8_t) (USTR_TYPE_5 | ((n) << USTR_TYPE_BITS)); \
-        break; \
+    switch (USTR_TYPE(s)) { \
       case USTR_TYPE_8: \
         USTR_HDR(8, s)->length = (uint8_t) (n); \
         break; \
@@ -77,7 +72,7 @@ static FORCEINLINE uint8_t ustrtype(size_t ustrsize) {
   } while (false)
 
 #define USTR_SET_CAP(s, c) do { \
-    switch (USTR_FLAGS(s) & USTR_TYPE_MASK) { \
+    switch (USTR_TYPE(s)) { \
       case USTR_TYPE_8: \
         USTR_HDR(8, s)->capacity = (uint8_t) (c); \
         break; \
@@ -99,49 +94,52 @@ ustr_t ustrn(const void *str, size_t n) {
   void *ustrh;
   ustr_t ustr;
   uint8_t type, hsize;
+  size_t cap;
 
-  type = n ? ustrtype(n) : (uint8_t) USTR_TYPE_8;
+  if (n < 8) {
+    cap = 8;
+    type = USTR_TYPE_8;
+  } else {
+    cap = roundup32(n);
+    type = ustrtype(cap);
+  }
   hsize = ustrhsize(type);
-  ustrh = malloc(hsize + n + 1);
+  ustrh = malloc(hsize + cap + 1);
   if (ustrh == nullptr) {
     return nullptr;
   }
   if (str == nullptr) {
-    memset(ustrh, 0, hsize + n + 1);
+    memset(ustrh, 0, hsize + cap + 1);
   }
   ustr = ustrh + hsize;
   if (n && str) {
     memcpy(ustr, str, n);
   }
   ustr[n] = '\0';
-  USTR_FLAGS(ustr) = type;
+  USTR_TYPE(ustr) = type;
   switch (type) {
-    case USTR_TYPE_5: {
-      USTR_FLAGS(ustr) = (uint8_t) (type | (n << USTR_TYPE_BITS));
-      break;
-    }
     case USTR_TYPE_8: {
       USTR_HDR_VAR(8, ustr);
       sh->length = (uint8_t) n;
-      sh->capacity = (uint8_t) n;
+      sh->capacity = (uint8_t) cap;
       break;
     }
     case USTR_TYPE_16: {
       USTR_HDR_VAR(16, ustr);
       sh->length = (uint16_t) n;
-      sh->capacity = (uint16_t) n;
+      sh->capacity = (uint16_t) cap;
       break;
     }
     case USTR_TYPE_32: {
       USTR_HDR_VAR(32, ustr);
       sh->length = (uint32_t) n;
-      sh->capacity = (uint32_t) n;
+      sh->capacity = (uint32_t) cap;
       break;
     }
     case USTR_TYPE_64: {
       USTR_HDR_VAR(64, ustr);
       sh->length = n;
-      sh->capacity = n;
+      sh->capacity = cap;
       break;
     }
     default:
@@ -164,7 +162,7 @@ ustr_t ustrdup(ustr_t s) {
 /* Free an ustr_t ustr. No operation is performed if 's' is nullptr. */
 void ustrfree(ustr_t s) {
   if (s) {
-    free((char *) s - ustrhsize(USTR_FLAGS(s)));
+    free((char *) s - ustrhsize(USTR_TYPE(s)));
   }
 }
 
@@ -183,8 +181,7 @@ void ustrfree(ustr_t s) {
  * the output will be "6" as the string was modified but the logical length
  * remains 6 bytes. */
 void ustrupdatelen(ustr_t s) {
-  int reallen = (int) strlen(s);
-  USTR_SET_LEN(s, (size_t) reallen);
+  USTR_SET_LEN(s, strlen(s));
 }
 
 /* Modify an ustr_t ustr in-place to make it empty (zero length).
@@ -206,7 +203,7 @@ ustr_t ustrgrow(ustr_t s, size_t addlen) {
   void *sh, *newsh;
   size_t avail = ustravail(s);
   size_t len, newlen;
-  char type, oldtype = (char) (USTR_FLAGS(s) & USTR_TYPE_MASK);
+  char type, oldtype = (char) (USTR_TYPE(s));
   int hdrlen;
 
   /* Return ASAP if there is enough space left. */
@@ -223,12 +220,6 @@ ustr_t ustrgrow(ustr_t s, size_t addlen) {
 
   type = ustrtype(newlen);
 
-  /* Don't use type 5: the user is appending to the ustr and type 5 is
-   * not able to remember empty space, so ustrgrow() must be called
-   * at every appending operation. */
-  if (type == USTR_TYPE_5)
-    type = USTR_TYPE_8;
-
   hdrlen = ustrhsize(type);
   if (oldtype == type) {
     newsh = realloc(sh, hdrlen + newlen + 1);
@@ -244,7 +235,7 @@ ustr_t ustrgrow(ustr_t s, size_t addlen) {
     memcpy((char *) newsh + hdrlen, s, len + 1);
     free(sh);
     s = (char *) newsh + hdrlen;
-    USTR_FLAGS(s) = (uint8_t) type;
+    USTR_TYPE(s) = (uint8_t) type;
     USTR_SET_LEN(s, len);
   }
   USTR_SET_CAP(s, newlen);
@@ -259,7 +250,7 @@ ustr_t ustrgrow(ustr_t s, size_t addlen) {
  * references must be substituted with the new pointer returned by the call. */
 ustr_t ustrpack(ustr_t s) {
   void *sh, *newsh;
-  char type, oldtype = (char) (USTR_FLAGS(s) & USTR_TYPE_MASK);
+  char type, oldtype = (char) (USTR_TYPE(s));
   int hdrlen;
   size_t len = ustrlen(s);
   sh = (char *) s - ustrhsize(oldtype);
@@ -278,7 +269,7 @@ ustr_t ustrpack(ustr_t s) {
     memcpy((char *) newsh + hdrlen, s, len + 1);
     free(sh);
     s = (char *) newsh + hdrlen;
-    USTR_FLAGS(s) = (uint8_t) type;
+    USTR_TYPE(s) = (uint8_t) type;
     USTR_SET_LEN(s, len);
   }
   USTR_SET_CAP(s, len);
@@ -288,7 +279,7 @@ ustr_t ustrpack(ustr_t s) {
 /* Return the pointer of the actual SDS allocation (normally SDS strings
  * are referenced by the start of the ustr buffer). */
 void *ustrhptr(ustr_t s) {
-  return (void *) (s - ustrhsize(USTR_FLAGS(s)));
+  return (void *) (s - ustrhsize(USTR_TYPE(s)));
 }
 
 /* Increment the ustr_t length and decrements the left free space at the
@@ -315,17 +306,9 @@ void *ustrhptr(ustr_t s) {
  * ustrinclen(s, nread);
  */
 void ustrinclen(ustr_t s, int incr) {
-  uint8_t flags = (uint8_t) USTR_FLAGS(s);
+  uint8_t flags = (uint8_t) USTR_TYPE(s);
   size_t len;
-  switch (flags & USTR_TYPE_MASK) {
-    case USTR_TYPE_5: {
-      uint8_t *fp = USTR_PFLAGS(s);
-      uint8_t oldlen = USTR_TYPE_5_LEN(flags);
-      assert((incr > 0 && oldlen + incr < 32) || (incr < 0 && oldlen >= (unsigned int) (-incr)));
-      *fp = (uint8_t) (USTR_TYPE_5 | ((oldlen + incr) << USTR_TYPE_BITS));
-      len = (size_t) (oldlen + incr);
-      break;
-    }
+  switch (flags) {
     case USTR_TYPE_8: {
       USTR_HDR_VAR(8, s);
       assert((incr >= 0 && sh->capacity - sh->length >= incr) || (incr < 0 && sh->length >= (unsigned int) (-incr)));

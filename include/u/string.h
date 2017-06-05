@@ -40,18 +40,10 @@
 #define USTR_MAX_PREALLOC (1024*1024)
 
 typedef char *ustr_t;
-typedef struct ustrh5 ustrh5_t;
 typedef struct ustrh8 ustrh8_t;
 typedef struct ustrh16 ustrh16_t;
 typedef struct ustrh32 ustrh32_t;
 typedef struct ustrh64 ustrh64_t;
-
-/* Note: ustrh5 is never used, we just access the flags byte directly.
- * However is here to document the layout of type 5 SDS strings. */
-PACKED(struct ustrh5 {
-  uint8_t flags; /* 3 lsb of type, and 5 msb of ustr length */
-  char buffer[];
-});
 
 PACKED(struct ustrh8 {
   uint8_t length; /* used */
@@ -81,22 +73,15 @@ PACKED(struct ustrh64 {
   char buffer[];
 });
 
-#define USTR_TYPE_5  0U
-#define USTR_TYPE_8  1U
-#define USTR_TYPE_16 2U
-#define USTR_TYPE_32 3U
-#define USTR_TYPE_64 4U
-#define USTR_TYPE_MASK 7
-#define USTR_TYPE_BITS 3
+#define USTR_TYPE_8  0U
+#define USTR_TYPE_16 1U
+#define USTR_TYPE_32 2U
+#define USTR_TYPE_64 3U
 #define USTR_HDR_VAR(T, s) ustrh##T##_t *sh = (void*)((s)-(sizeof(ustrh##T##_t)));
 #define USTR_HDR(T, s) ((ustrh##T##_t *)((s)-(sizeof(ustrh##T##_t))))
-#define USTR_TYPE_5_LEN(f) ((f)>>USTR_TYPE_BITS)
 
 static FORCEINLINE size_t ustrlen(const ustr_t s) {
-  uint8_t flags = (uint8_t) s[-1];
-  switch (flags & USTR_TYPE_MASK) {
-    case USTR_TYPE_5:
-      return USTR_TYPE_5_LEN(flags);
+  switch ((uint8_t) s[-1]) {
     case USTR_TYPE_8:
       return USTR_HDR(8, s)->length;
     case USTR_TYPE_16:
@@ -112,11 +97,7 @@ static FORCEINLINE size_t ustrlen(const ustr_t s) {
 }
 
 static FORCEINLINE size_t ustravail(const ustr_t s) {
-  uint8_t flags = (uint8_t) s[-1];
-  switch (flags & USTR_TYPE_MASK) {
-    case USTR_TYPE_5: {
-      return 0;
-    }
+  switch ((uint8_t) s[-1]) {
     case USTR_TYPE_8: {
       USTR_HDR_VAR(8, s);
       return sh->capacity - sh->length;
@@ -140,10 +121,7 @@ static FORCEINLINE size_t ustravail(const ustr_t s) {
 }
 
 static FORCEINLINE size_t ustrcap(const ustr_t s) {
-  uint8_t flags = (uint8_t) s[-1];
-  switch (flags & USTR_TYPE_MASK) {
-    case USTR_TYPE_5:
-      return USTR_TYPE_5_LEN(flags);
+  switch ((uint8_t) s[-1]) {
     case USTR_TYPE_8:
       return USTR_HDR(8, s)->capacity;
     case USTR_TYPE_16:

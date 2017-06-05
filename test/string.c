@@ -155,19 +155,17 @@ CUTEST(ustr, s) {
     ustrfree(x);
     ustrfree(y);
     x = ustr("0");
-    ASSERT(ustrlen(x) == 1 && ustravail(x) == 0);
+    ASSERT(ustrlen(x) == 1 && ustravail(x) == 7);
 
     /* Run the test a few times in order to hit the first two
      * SDS header types. */
     for (i = 0; i < 10; i++) {
       size_t oldlen = ustrlen(x);
       x = ustrgrow(x, (size_t) step);
-      int type = x[-1] & USTR_TYPE_MASK;
+      int type = x[-1];
 
       ASSERT(ustrlen(x) == oldlen);
-      if (type != USTR_TYPE_5) {
-        ASSERT(ustravail(x) >= step);
-      }
+      ASSERT(ustravail(x) >= step);
       p = x + oldlen;
       for (j = 0; j < step; j++) {
         p[j] = (char) ('A' + j);
