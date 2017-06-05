@@ -193,6 +193,7 @@ void ustrclear(ustr_t s) {
   s[0] = '\0';
 }
 
+//todo rework that horribly designed func body, oh god
 /* Enlarge the free space at the end of the ustr_t string so that the caller
  * is sure that after calling this function can overwrite up to addlen
  * bytes after the end of the string, plus one more byte for nul term.
