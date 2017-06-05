@@ -81,11 +81,11 @@ PACKED(struct ustrh64 {
   char buffer[];
 });
 
-#define USTR_TYPE_5  0
-#define USTR_TYPE_8  1
-#define USTR_TYPE_16 2
-#define USTR_TYPE_32 3
-#define USTR_TYPE_64 4
+#define USTR_TYPE_5  0U
+#define USTR_TYPE_8  1U
+#define USTR_TYPE_16 2U
+#define USTR_TYPE_32 3U
+#define USTR_TYPE_64 4U
 #define USTR_TYPE_MASK 7
 #define USTR_TYPE_BITS 3
 #define USTR_HDR_VAR(T, s) ustrh##T##_t *sh = (void*)((s)-(sizeof(ustrh##T##_t)));
@@ -158,9 +158,10 @@ static FORCEINLINE size_t ustrcap(const ustr_t s) {
   return 0;
 }
 
-ustr_t  ustrn(const void *init, size_t initlen);
+#define ustrempty() ustrn("", 0)
+
+ustr_t  ustrn(const void *str, size_t n);
 ustr_t  ustr(const char *init);
-ustr_t  ustrempty(void);
 ustr_t  ustrdup(ustr_t s);
 void    ustrfree(ustr_t s);
 ustr_t  ustrresize(ustr_t s, size_t len);
