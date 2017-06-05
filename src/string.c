@@ -111,7 +111,7 @@ ustr_t ustrn(const void *str, size_t n) {
   if (str == nullptr) {
     memset(ustrh, 0, hsize + cap + 1);
   }
-  ustr = ustrh + hsize;
+  ustr = (char *) ustrh + hsize;
   if (n && str) {
     memcpy(ustr, str, n);
   }
