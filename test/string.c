@@ -184,5 +184,5 @@ int main(void) {
   CUTEST_DATA test = {0};
 
   CUTEST_PASS(ustr, s);
-  return EXIT_FAILURE;
+  return EXIT_SUCCESS;
 }
