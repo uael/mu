@@ -285,9 +285,6 @@
 #ifdef __GNUC__
 # define extension __extension__
 #endif
-#ifndef extension
-# define extension
-#endif
 
 #define restrict __restrict
 
@@ -303,7 +300,7 @@
 # define NORETURN __attribute__((__noreturn__))
 #elif defined(__STDC__) && __STDC_VERSION__ >= 201112L
 # define NORETURN _Noreturn
-#elif COMPILER_WINDOWS
+#elif COMPILER_MSVC
 # define NORETURN __declspec(noreturn)
 #else
 # define NORETURN
