@@ -37,6 +37,7 @@
 # include <cstdint>
 # include <cstddef>
 # include <cstdlib>
+# include <cstdio>
 # include <cfloat>
 # include <climits>
 # include <ctype.h>
@@ -45,6 +46,7 @@
 # include <stdint.h>
 # include <stddef.h>
 # include <stdlib.h>
+# include <stdio.h>
 # include <float.h>
 # include <limits.h>
 # include <ctype.h>

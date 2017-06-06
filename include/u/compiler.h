@@ -450,6 +450,7 @@
 # pragma warning(disable : 4200)
 # pragma warning(disable : 4204)
 # pragma warning(disable : 4706)
+# pragma warning(disable : 4028)
 # ifdef __cplusplus
 #   pragma warning(disable : 4100)
 #   pragma warning(disable : 4510)

@@ -25,7 +25,7 @@
 
 #include "cute.h"
 
-#include "u/compiler.h"
+#include "u/types.h"
 
 CUTEST_DATA {
   int dummy;
@@ -34,13 +34,10 @@ CUTEST_DATA {
 CUTEST_SETUP {}
 CUTEST_TEARDOWN {}
 
-NORETURN CUTEST(compiler, noreturn) {
+NORETURN void test_noreturn(void) {
   exit(0);
 }
 
 int main(void) {
-  CUTEST_DATA test = {0};
-
-  compiler_noreturn_test(&test);
-  return EXIT_FAILURE;
+  test_noreturn();
 }
