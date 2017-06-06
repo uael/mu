@@ -67,8 +67,8 @@ PACKED(struct ustrh32 {
 });
 
 PACKED(struct ustrh64 {
-  uint64_t length; /* used */
-  uint64_t capacity; /* excluding the header and null terminator */
+  size_t length; /* used */
+  size_t capacity; /* excluding the header and null terminator */
   uint8_t flags; /* 3 lsb of type, 5 unused bits */
   char buffer[];
 });
