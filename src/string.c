@@ -313,13 +313,13 @@ void ustrinclen(ustr_t s, int incr) {
     case USTR_TYPE_8: {
       USTR_HDR_VAR(8, s);
       assert((incr >= 0 && sh->capacity - sh->length >= incr) || (incr < 0 && sh->length >= (unsigned int) (-incr)));
-      len = (sh->length += incr);
+      len = (sh->length += (uint8_t) incr);
       break;
     }
     case USTR_TYPE_16: {
       USTR_HDR_VAR(16, s);
       assert((incr >= 0 && sh->capacity - sh->length >= incr) || (incr < 0 && sh->length >= (unsigned int) (-incr)));
-      len = (sh->length += incr);
+      len = (sh->length += (uint16_t) incr);
       break;
     }
     case USTR_TYPE_32: {
