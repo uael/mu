@@ -37,6 +37,7 @@ endif()
 set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(u_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(u_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
+set(u_VENDOR_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
 file(GLOB_RECURSE u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/${PROJECT_NAME}/*.h)
 file(GLOB_RECURSE u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
@@ -46,9 +47,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${u_HEADERS}")
 target_include_directories(${PROJECT_NAME} PUBLIC ${u_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${u_SOURCE_DIR})
 
-add_subdirectory(vendor)
 if(EXISTS ${u_TEST_DIR})
     enable_testing()
+    add_subdirectory(${u_VENDOR_DIR}/cute)
     add_subdirectory(${u_TEST_DIR})
 endif()
 
