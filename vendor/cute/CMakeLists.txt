@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
-project(u)
+project(cute)
 
 option(COVERAGE "Turn on COVERAGE support" OFF)
 
@@ -44,26 +44,25 @@ if(MSVC)
     endforeach()
 endif()
 
-set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
-set(u_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
-set(u_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
+set(cute_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+set(cute_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+set(cute_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
 
-file(GLOB_RECURSE u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/*.h)
-file(GLOB_RECURSE u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
+file(GLOB_RECURSE cute_HEADERS ${cute_HEADERS} ${cute_INCLUDE_DIR}/*.h)
+file(GLOB_RECURSE cute_SOURCES ${cute_SOURCES} ${cute_SOURCE_DIR}/*.c)
 
-add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${u_HEADERS}")
-target_include_directories(${PROJECT_NAME} PUBLIC ${u_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${u_SOURCE_DIR})
+add_library(${PROJECT_NAME} STATIC ${cute_SOURCES} ${cute_HEADERS})
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${cute_HEADERS}")
+target_include_directories(${PROJECT_NAME} PUBLIC ${cute_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${cute_SOURCE_DIR})
 
-add_subdirectory(vendor)
-if(EXISTS ${u_TEST_DIR})
+if(EXISTS ${cute_TEST_DIR})
     enable_testing()
-    add_subdirectory(${u_TEST_DIR})
+    add_subdirectory(${cute_TEST_DIR})
 endif()
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
+    PUBLIC_HEADER DESTINATION include
 )

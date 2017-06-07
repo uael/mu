@@ -80,7 +80,7 @@ CUTEST_SETUP;
 CUTEST_TEARDOWN;
 
 CUTE_FORCEINLINE CUTE_CONSTCALL int test_run(CUTEST_t *self, const char *id, unsigned id_len, unsigned char should_fail,
-                                   const char *(*test_fn)(CUTEST_t *)) {
+                                             const char *(*test_fn)(CUTEST_t *)) {
   const char *result;
   int s = sizeof(CUTEST_PADDING) - id_len - 1;
 
