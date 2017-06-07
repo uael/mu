@@ -162,7 +162,7 @@ CUTEST(ustr, s) {
     for (i = 0; i < 10; i++) {
       size_t oldlen = ustrlen(x);
       x = ustrgrow(x, (size_t) step);
-      int type = x[-1];
+      UNUSED int type = x[-1];
 
       ASSERT(ustrlen(x) == oldlen);
       ASSERT(ustravail(x) >= step);
