@@ -39,19 +39,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${u_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${u_SOURCE_DIR})
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /Oy)
-    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        target_compile_options(${PROJECT_NAME} PRIVATE /Od)
-    else()
-        target_compile_options(${PROJECT_NAME} PRIVATE /Ox)
-    endif()
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE /Oy
+        PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>
+    )
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer)
-    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        target_compile_options(${PROJECT_NAME} PRIVATE -O0 -g3)
-    else()
-        target_compile_options(${PROJECT_NAME} PRIVATE -O3)
-    endif()
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer
+        PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>
+    )
 endif()
 
 if(MSVC)
