@@ -30,6 +30,8 @@
 #ifndef  U_PLATFORM_H__
 # define U_PLATFORM_H__
 
+#include "pp.h"
+
 /*!\def U_COMPILE
  * \bried Defined to 1 when compiling the u library,
  * undefined (or zero) when using the library
