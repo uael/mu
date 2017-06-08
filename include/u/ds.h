@@ -153,7 +153,7 @@ struct ds {
   PP_MCALL(foreach_, PP_EVAL(val), PP_EVAL(in))
 
 #define rforeach(val, in) \
-  PP_EVAL(rforeach_ PP_VA_PASS(PP_EVAL(val), PP_EVAL(in)))
+  PP_MCALL(rforeach_, PP_EVAL(val), PP_EVAL(in))
 
 U_API size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize);
 U_API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize);
