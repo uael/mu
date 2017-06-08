@@ -25,18 +25,29 @@ if(COVERAGE AND NOT MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 endif()
 
-set(u_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
-set(u_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
-set(u_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
-set(u_VENDOR_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor)
+set(project_HEADERS)
+set(project_SOURCES)
+set(project_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+set(project_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+set(project_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
+set(project_VENDOR_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
-file(GLOB_RECURSE u_HEADERS ${u_HEADERS} ${u_INCLUDE_DIR}/${PROJECT_NAME}/*.h)
-file(GLOB_RECURSE u_SOURCES ${u_SOURCES} ${u_SOURCE_DIR}/*.c)
+if(EXISTS ${project_INCLUDE_DIR})
+    file(GLOB_RECURSE project_HEADERS ${project_HEADERS} ${project_INCLUDE_DIR}/${PROJECT_NAME}/*.h)
+endif()
+if(EXISTS ${project_SOURCE_DIR})
+    file(GLOB_RECURSE project_SOURCES ${project_SOURCES} ${project_SOURCE_DIR}/*.c)
+endif()
 
-add_library(${PROJECT_NAME} STATIC ${u_SOURCES} ${u_HEADERS})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${u_HEADERS}")
-target_include_directories(${PROJECT_NAME} PUBLIC ${u_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${u_SOURCE_DIR})
+add_library(${PROJECT_NAME} STATIC ${project_SOURCES} ${project_HEADERS})
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${project_HEADERS}")
+
+if(EXISTS ${project_INCLUDE_DIR})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${project_INCLUDE_DIR})
+endif()
+if(EXISTS ${project_SOURCE_DIR})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${project_SOURCE_DIR})
+endif()
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME}
@@ -65,10 +76,16 @@ if(MSVC)
     endforeach()
 endif()
 
-if(EXISTS ${u_TEST_DIR})
+if(EXISTS ${project_VENDOR_DIR}/CMakeLists.txt)
+    add_subdirectory(${project_VENDOR_DIR})
+endif()
+
+if(EXISTS ${project_TEST_DIR})
     enable_testing()
-    add_subdirectory(${u_VENDOR_DIR}/cute)
-    add_subdirectory(${u_TEST_DIR})
+    if(EXISTS ${project_VENDOR_DIR}/cute)
+        add_subdirectory(${project_VENDOR_DIR}/cute)
+    endif()
+    add_subdirectory(${project_TEST_DIR})
 endif()
 
 install(TARGETS ${PROJECT_NAME}
@@ -76,6 +93,15 @@ install(TARGETS ${PROJECT_NAME}
     ARCHIVE DESTINATION lib
     PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
 )
-install(FILES ${u_INCLUDE_DIR}/${PROJECT_NAME}.h
-    DESTINATION include
-)
+if(EXISTS ${project_INCLUDE_DIR}/${PROJECT_NAME}.h)
+    install(FILES ${project_INCLUDE_DIR}/${PROJECT_NAME}.h
+        DESTINATION include
+    )
+endif()
+
+set(project_HEADERS)
+set(project_SOURCES)
+set(project_INCLUDE_DIR)
+set(project_SOURCE_DIR)
+set(project_TEST_DIR)
+set(project_VENDOR_DIR)
