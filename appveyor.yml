@@ -1,10 +1,11 @@
-version: "{build}"
+version: "0.1.0+{build}"
 
 platform:
   - Win32
   - x64
 
 environment:
+  project: u
   MSVC_DEFAULT_OPTIONS: ON
   matrix:
     - msvc: 'Visual Studio 12 2013'
@@ -18,7 +19,7 @@ init:
   - cmd: cmake --version
   - cmd: msbuild /version
 
-clone_folder: C:\projects\mu
+clone_folder: C:\projects\%project%
 
 branches:
   only:
@@ -29,7 +30,7 @@ install:
   - git submodule update --init --recursive
 
 before_build:
-  - cmd: cd C:\projects\mu
+  - cmd: cd C:\projects\%project%
   - cmd: md build
   - cmd: cd build
   - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR_NAME=%msvc%
@@ -37,9 +38,9 @@ before_build:
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ..
 
 build:
-  project: C:\projects\mu\build\u.sln
+  project: C:\projects\%project%\build\%project%.sln
   verbosity: quiet
 
 test_script:
-  - ps: cd C:\projects\mu\build
+  - ps: cd C:\projects\%project%\build
   - cmd: ctest -VV
