@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 project(u)
 
+cmake_policy(SET CMP0054 OLD)
+cmake_policy(SET CMP0045 OLD)
+
 if ("${CMAKE_C_COMPILER_ID}" MATCHES "Clang")
     set(CLANG TRUE)
 elseif ("${CMAKE_C_COMPILER_ID}" MATCHES "GNU")
