@@ -39,7 +39,11 @@
 #define PP_LPAR (
 #define PP_RPAR )
 #define PP_VA_PASS(...) PP_LPAR __VA_ARGS__ PP_RPAR
-#define PP_MCALL(macro, ...) PP_EVAL(PP_JOIN(PP_EVAL(macro), PP_VA_PASS(__VA_ARGS__)))
+#ifdef _MSC_VER
+# define PP_MCALL(macro, ...) PP_EVAL(PP_JOIN(PP_EVAL(macro), PP_VA_PASS(__VA_ARGS__)))
+#else
+# define PP_MCALL(macro, ...) PP_EVAL(PP_EVAL(macro) PP_VA_PASS(__VA_ARGS__))
+#endif
 
 #define PP_VA_NARGS_PEEK(_1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...) N
 #define PP_VA_NARGS_RSEQ 9, 8, 7, 6, 5, 4, 3, 2, 1

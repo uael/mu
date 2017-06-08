@@ -11,8 +11,6 @@ elseif(NOT MSVC)
     message(FATAL_ERROR "Unknown compiler")
 endif()
 
-option(COVERAGE "Turn on COVERAGE support" OFF)
-
 if(CMAKE_VERSION VERSION_LESS "3.1")
     if(GCC)
         set(CMAKE_C_FLAGS "-std=c99 ${CMAKE_C_FLAGS}")
@@ -20,6 +18,8 @@ if(CMAKE_VERSION VERSION_LESS "3.1")
 else()
     set(CMAKE_C_STANDARD 99)
 endif()
+
+option(COVERAGE "Turn on COVERAGE support" OFF)
 
 if(COVERAGE AND NOT MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
