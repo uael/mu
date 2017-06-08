@@ -6,6 +6,7 @@ platform:
 
 environment:
   project: u
+  project_sln: C:\projects\%project%\build\%project%.sln
   MSVC_DEFAULT_OPTIONS: ON
   matrix:
     - msvc: 'Visual Studio 12 2013'
@@ -38,9 +39,9 @@ before_build:
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ..
 
 build:
-  project: C:\projects\%project%\build\%project%.sln
+  project: $(project_sln)
   verbosity: quiet
 
 test_script:
-  - ps: cd C:\projects\%project%\build
+  - cmd: cd C:\projects\%project%\build
   - cmd: ctest -VV
