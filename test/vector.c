@@ -10,11 +10,11 @@ struct point {
   long long x, y;
 };
 
-typedef vec_of(int) v0_t;
-typedef vec_of(size_t) v1_t;
-typedef vec_of(struct { int x; int y; }) v2_t;
-typedef vec_of(point_t) v3_t;
-typedef vec_of(void *) v4_t;
+typedef uvec_of(int) v0_t;
+typedef uvec_of(size_t) v1_t;
+typedef uvec_of(struct { int x; int y; }) v2_t;
+typedef uvec_of(point_t) v3_t;
+typedef uvec_of(void *) v4_t;
 
 CUTEST_DATA {
   v0_t v0;
@@ -59,16 +59,17 @@ CUTEST_SETUP {
 }
 
 CUTEST_TEARDOWN {
-  vec_dtor(self->v0);
-  vec_dtor(self->v1);
-  vec_dtor(self->v2);
-  vec_dtor(self->v3);
-  vec_dtor(self->v4);
+  uvec_dtor(self->v0);
+  uvec_dtor(self->v1);
+  uvec_dtor(self->v2);
+  uvec_dtor(self->v3);
+  uvec_dtor(self->v4);
 }
 
 CUTEST(vector, grow);
 CUTEST(vector, reserve);
 CUTEST(vector, resize);
+CUTEST(vector, push);
 
 int main(void) {
   CUTEST_DATA test = {0};
@@ -76,6 +77,7 @@ int main(void) {
   CUTEST_PASS(vector, grow);
   CUTEST_PASS(vector, reserve);
   CUTEST_PASS(vector, resize);
+  CUTEST_PASS(vector, push);
 
   return EXIT_SUCCESS;
 }
@@ -100,11 +102,11 @@ CUTEST(vector, grow) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_grow(self->v0, self->s0);
-  vec_grow(self->v1, self->s1);
-  vec_grow(self->v2, self->s2);
-  vec_grow(self->v3, self->s3);
-  vec_grow(self->v4, self->s4);
+  uvec_grow(self->v0, self->s0);
+  uvec_grow(self->v1, self->s1);
+  uvec_grow(self->v2, self->s2);
+  uvec_grow(self->v3, self->s3);
+  uvec_grow(self->v4, self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
@@ -115,40 +117,40 @@ CUTEST(vector, grow) {
   self->s3 *= 2;
   self->s4 *= 2;
 
-  vec_grow(self->v0, self->s0);
-  vec_grow(self->v1, self->s1);
-  vec_grow(self->v2, self->s2);
-  vec_grow(self->v3, self->s3);
-  vec_grow(self->v4, self->s4);
+  uvec_grow(self->v0, self->s0);
+  uvec_grow(self->v1, self->s1);
+  uvec_grow(self->v2, self->s2);
+  uvec_grow(self->v3, self->s3);
+  uvec_grow(self->v4, self->s4);
 
   test_qroudup32(self);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_grow(self->v0, -(self->s0/2));
-  vec_grow(self->v1, -(self->s1/2));
-  vec_grow(self->v2, -(self->s2/2));
-  vec_grow(self->v3, -(self->s3/2));
-  vec_grow(self->v4, -(self->s4/2));
+  uvec_grow(self->v0, -(self->s0/2));
+  uvec_grow(self->v1, -(self->s1/2));
+  uvec_grow(self->v2, -(self->s2/2));
+  uvec_grow(self->v3, -(self->s3/2));
+  uvec_grow(self->v4, -(self->s4/2));
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_grow(self->v0, -self->s0);
-  vec_grow(self->v1, -self->s1);
-  vec_grow(self->v2, -self->s2);
-  vec_grow(self->v3, -self->s3);
-  vec_grow(self->v4, -self->s4);
+  uvec_grow(self->v0, -self->s0);
+  uvec_grow(self->v1, -self->s1);
+  uvec_grow(self->v2, -self->s2);
+  uvec_grow(self->v3, -self->s3);
+  uvec_grow(self->v4, -self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_grow(self->v0, 1);
-  vec_grow(self->v1, 1);
-  vec_grow(self->v2, 1);
-  vec_grow(self->v3, 1);
-  vec_grow(self->v4, 1);
+  uvec_grow(self->v0, 1);
+  uvec_grow(self->v1, 1);
+  uvec_grow(self->v2, 1);
+  uvec_grow(self->v3, 1);
+  uvec_grow(self->v4, 1);
 
   ASSERT_CAPACITY((self->q0 ? self->q0 : UVEC_MIN_CAPACITY), self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
@@ -160,11 +162,11 @@ CUTEST(vector, reserve) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_growth(self->v0, self->s0);
-  vec_growth(self->v1, self->s1);
-  vec_growth(self->v2, self->s2);
-  vec_growth(self->v3, self->s3);
-  vec_growth(self->v4, self->s4);
+  uvec_growth(self->v0, self->s0);
+  uvec_growth(self->v1, self->s1);
+  uvec_growth(self->v2, self->s2);
+  uvec_growth(self->v3, self->s3);
+  uvec_growth(self->v4, self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
@@ -177,20 +179,20 @@ CUTEST(vector, reserve) {
 
   test_qroudup32(self);
 
-  vec_growth(self->v0, self->s0);
-  vec_growth(self->v1, self->s1);
-  vec_growth(self->v2, self->s2);
-  vec_growth(self->v3, self->s3);
-  vec_growth(self->v4, self->s4);
+  uvec_growth(self->v0, self->s0);
+  uvec_growth(self->v1, self->s1);
+  uvec_growth(self->v2, self->s2);
+  uvec_growth(self->v3, self->s3);
+  uvec_growth(self->v4, self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_growth(self->v0, -self->s0);
-  vec_growth(self->v1, -self->s1);
-  vec_growth(self->v2, -self->s2);
-  vec_growth(self->v3, -self->s3);
-  vec_growth(self->v4, -self->s4);
+  uvec_growth(self->v0, -self->s0);
+  uvec_growth(self->v1, -self->s1);
+  uvec_growth(self->v2, -self->s2);
+  uvec_growth(self->v3, -self->s3);
+  uvec_growth(self->v4, -self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
@@ -202,50 +204,79 @@ CUTEST(vector, resize) {
   ASSERT_CAPACITY(0, 0, 0, 0, 0);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_resize(self->v0, self->s0);
-  vec_resize(self->v1, self->s1);
-  vec_resize(self->v2, self->s2);
-  vec_resize(self->v3, self->s3);
-  vec_resize(self->v4, self->s4);
+  uvec_resize(self->v0, self->s0);
+  uvec_resize(self->v1, self->s1);
+  uvec_resize(self->v2, self->s2);
+  uvec_resize(self->v3, self->s3);
+  uvec_resize(self->v4, self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(self->s0, self->s1, self->s2, self->s3, self->s4);
 
-  vec_resize(self->v0, -self->s0);
-  vec_resize(self->v1, -self->s1);
-  vec_resize(self->v2, -self->s2);
-  vec_resize(self->v3, -self->s3);
-  vec_resize(self->v4, -self->s4);
+  uvec_resize(self->v0, -self->s0);
+  uvec_resize(self->v1, -self->s1);
+  uvec_resize(self->v2, -self->s2);
+  uvec_resize(self->v3, -self->s3);
+  uvec_resize(self->v4, -self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_resize(self->v0, -self->s0);
-  vec_resize(self->v1, -self->s1);
-  vec_resize(self->v2, -self->s2);
-  vec_resize(self->v3, -self->s3);
-  vec_resize(self->v4, -self->s4);
+  uvec_resize(self->v0, -self->s0);
+  uvec_resize(self->v1, -self->s1);
+  uvec_resize(self->v2, -self->s2);
+  uvec_resize(self->v3, -self->s3);
+  uvec_resize(self->v4, -self->s4);
 
   ASSERT_CAPACITY(self->q0, self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
-  vec_resize(self->v0, 1);
-  vec_resize(self->v1, 1);
-  vec_resize(self->v2, 1);
-  vec_resize(self->v3, 1);
-  vec_resize(self->v4, 1);
+  uvec_resize(self->v0, 1);
+  uvec_resize(self->v1, 1);
+  uvec_resize(self->v2, 1);
+  uvec_resize(self->v3, 1);
+  uvec_resize(self->v4, 1);
 
   ASSERT_CAPACITY((self->q0 ? self->q0 : UVEC_MIN_CAPACITY), self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(1, 1, 1, 1, 1);
 
-  vec_resize(self->v0, 0);
-  vec_resize(self->v1, 0);
-  vec_resize(self->v2, 0);
-  vec_resize(self->v3, 0);
-  vec_resize(self->v4, 0);
+  uvec_resize(self->v0, 0);
+  uvec_resize(self->v1, 0);
+  uvec_resize(self->v2, 0);
+  uvec_resize(self->v3, 0);
+  uvec_resize(self->v4, 0);
 
   ASSERT_CAPACITY((self->q0 ? self->q0 : UVEC_MIN_CAPACITY), self->q1, self->q2, self->q3, self->q4);
   ASSERT_SIZE(0, 0, 0, 0, 0);
 
   return NULL;
+}
+
+CUTEST(vector, push) {
+  int i, i0;
+
+  ASSERT_CAPACITY(0, 0, 0, 0, 0);
+  ASSERT_SIZE(0, 0, 0, 0, 0);
+
+  for (i = 0; i<100; ++i) {
+    uvec_push(self->v0, i);
+  }
+
+  foreach(i0, in(T_uvec, self->v0)) {
+    ASSERT(i0 == uvec_it(self->v0) - uvec_begin(self->v0));
+    ASSERT(i0 == *uvec_it(self->v0));
+  }
+
+  ASSERT(uvec_it(self->v0) == uvec_end(self->v0));
+  ASSERT(100 == uvec_it(self->v0) - uvec_begin(self->v0));
+
+  rforeach(i0, in(T_uvec, self->v0)) {
+    ASSERT(i0 == uvec_it(self->v0) - uvec_begin(self->v0));
+    ASSERT(i0 == *uvec_it(self->v0));
+  }
+
+  ASSERT(uvec_it(self->v0) == uvec_begin(self->v0)-1);
+  ASSERT(-1 == uvec_it(self->v0) - uvec_begin(self->v0));
+
+  return CUTE_SUCCESS;
 }
