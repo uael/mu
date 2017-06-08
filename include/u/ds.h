@@ -40,7 +40,8 @@
  */
 #define ds_super(T) \
   size_t cap, size; \
-  T *data
+  T *data; \
+  T *it
 
 typedef struct ds ds_t;
 
@@ -66,11 +67,22 @@ struct ds {
  */
 #define ds_data(ds) (ds).data
 
+/*!\def ds_it
+ * \param ds Data Structure
+ */
+#define ds_it(ds) (ds).it
+
+/*!\def ds_pat
+ * \param ds    Data Structure
+ * \param index Index
+ */
+#define ds_pat(ds, index) (ds_data(ds) + (index))
+
 /*!\def ds_at
  * \param ds    Data Structure
  * \param index Index
  */
-#define ds_at(ds, index) ds_data(ds)[index]
+#define ds_at(ds, index) *ds_pat(ds, index)
 
 /*!\def ds_front
  * \param ds Data Structure
@@ -118,8 +130,30 @@ struct ds {
 #define ds_trim(ds, isize) \
   ds_decay((ds), ds_size(ds))
 
-#define foreach(ds, it_name) \
-  for (it_name = 0; (it_name) < ds_size(ds); ++(it_name))
+#define foreach_(value, it, begin, end) \
+  for ( \
+    (value) = *((it) = (begin)); \
+    (it) < (end); \
+    (value) = *(++(it)) \
+  )
+
+#define rforeach_(value, it, begin, end) \
+  for ( \
+    (value) = *((it) = (end) - 1); \
+    (it) >= (begin); \
+    (value) = *(--(it)) \
+  )
+
+#define in(T_ds, ds) \
+  PP_MCALL(PP_JOIN(T_ds, _it), PP_EVAL(ds)), \
+  PP_MCALL(PP_JOIN(T_ds, _begin), PP_EVAL(ds)), \
+  PP_MCALL(PP_JOIN(T_ds, _end), PP_EVAL(ds))
+
+#define foreach(val, in) \
+  PP_MCALL(foreach_, PP_EVAL(val), PP_EVAL(in))
+
+#define rforeach(val, in) \
+  PP_EVAL(rforeach_ PP_VA_PASS(PP_EVAL(val), PP_EVAL(in)))
 
 U_API size_t ds_pgrowth(ds_t *self, const ssize_t nmin, const size_t isize);
 U_API size_t ds_pdecay(ds_t *self, const ssize_t nmax, const size_t isize);
