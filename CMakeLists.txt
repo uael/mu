@@ -7,31 +7,20 @@ cmake_policy(SET CMP0045 OLD)
 include(CMakeParseArguments)
 
 function(add_vendor)
-    cmake_parse_arguments(DL_ARGS "QUIET" "PROJ" "" ${ARGN})
-    if (DL_ARGS_QUIET)
-        set(OUTPUT_QUIET "OUTPUT_QUIET")
-    else()
-        unset(OUTPUT_QUIET)
-        message(STATUS "Downloading/updating ${DL_ARGS_PROJ}")
-    endif()
-    set(DL_ARGS_PREFIX "${CMAKE_BINARY_DIR}")
-    set(DL_ARGS_DOWNLOAD_DIR "${DL_ARGS_PREFIX}/vendor/${DL_ARGS_PROJ}")
+    cmake_parse_arguments(DL_ARGS "" "PROJ" "" ${ARGN})
+    set(DL_ARGS_DOWNLOAD_DIR "${CMAKE_BINARY_DIR}/vendor/${DL_ARGS_PROJ}")
     set(DL_ARGS_SOURCE_DIR "${DL_ARGS_DOWNLOAD_DIR}/src")
-    set(${DL_ARGS_PROJ}_SOURCE_DIR "${DL_ARGS_SOURCE_DIR}" PARENT_SCOPE)
-    configure_file("vendor.cmake.in" "${DL_ARGS_DOWNLOAD_DIR}/CMakeLists.txt")
+    configure_file("cmake/vendor.cmake.in" "${DL_ARGS_DOWNLOAD_DIR}/CMakeLists.txt")
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}"
-        -D "CMAKE_MAKE_PROGRAM:FILE=${CMAKE_MAKE_PROGRAM}"
-        .
-        RESULT_VARIABLE result
-        ${OUTPUT_QUIET}
+        -D "CMAKE_MAKE_PROGRAM:FILE=${CMAKE_MAKE_PROGRAM}" .
+        RESULT_VARIABLE result OUTPUT_QUIET
         WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}"
     )
     if(result)
         message(FATAL_ERROR "CMake step for ${DL_ARGS_PROJ} failed: ${result}")
     endif()
     execute_process(COMMAND ${CMAKE_COMMAND} --build .
-        RESULT_VARIABLE result
-        ${OUTPUT_QUIET}
+        RESULT_VARIABLE result OUTPUT_QUIET
         WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}"
     )
     if(result)
@@ -121,10 +110,7 @@ endif()
 
 if(EXISTS ${project_TEST_DIR})
     enable_testing()
-    #if(EXISTS ${project_VENDOR_DIR}/cute)
-    #    add_subdirectory(${project_VENDOR_DIR}/cute)
-    #endif()
-    add_vendor(PROJ cutee
+    add_vendor(PROJ cute
         GIT_REPOSITORY      https://github.com/uael/cute.git
         GIT_TAG             master
     )
