@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.2)
-
-project(${DL_ARGS_PROJ}-download NONE)
-
+project(vendor-${DL_ARGS_PROJ} NONE)
 include(ExternalProject)
-ExternalProject_Add(${DL_ARGS_PROJ}-download
+ExternalProject_Add(vendor-${DL_ARGS_PROJ}
     ${DL_ARGS_UNPARSED_ARGUMENTS}
     SOURCE_DIR          "${DL_ARGS_SOURCE_DIR}"
     CONFIGURE_COMMAND   ""
