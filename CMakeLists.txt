@@ -5,10 +5,10 @@ cmake_policy(SET CMP0054 OLD)
 cmake_policy(SET CMP0045 OLD)
 
 option(DEVEL "Build as development environment" ON)
+option(COVERAGE "Turn on COVERAGE support" OFF)
 
 function(add_vendor)
   include(CMakeParseArguments)
-
   cmake_parse_arguments(DL_ARGS "" "PROJ" "" ${ARGN})
   set(DL_ARGS_DOWNLOAD_DIR "${CMAKE_BINARY_DIR}/vendor/${DL_ARGS_PROJ}")
   set(DL_ARGS_SOURCE_DIR "${DL_ARGS_DOWNLOAD_DIR}/src")
@@ -26,7 +26,13 @@ function(add_vendor)
     RESULT_VARIABLE result OUTPUT_QUIET
     WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}")
   if (result)
-    message(FATAL_ERROR "CMake step for ${DL_ARGS_PROJ} failed: ${result}")
+    message(FATAL_ERROR "Config step for ${DL_ARGS_PROJ} failed: ${result}")
+  endif ()
+  execute_process(COMMAND ${CMAKE_COMMAND} --build .
+    RESULT_VARIABLE result OUTPUT_QUIET
+    WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}")
+  if (result)
+    message(FATAL_ERROR "Build step for ${DL_ARGS_PROJ} failed: ${result}")
   endif ()
   add_subdirectory(${DL_ARGS_SOURCE_DIR})
 endfunction()
@@ -48,8 +54,6 @@ if (CMAKE_VERSION VERSION_LESS "3.1")
 else ()
   set(CMAKE_C_STANDARD 99)
 endif ()
-
-option(COVERAGE "Turn on COVERAGE support" OFF)
 
 if (COVERAGE AND NOT MSVC)
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
