@@ -18,6 +18,7 @@ if (NOT COMMAND add_vendor)
       "project(vendor-${DL_ARGS_PROJ} NONE)\n"
       "include(ExternalProject)\n"
       "ExternalProject_Add(vendor-${DL_ARGS_PROJ}\n"
+      "CMAKE_ARGS -D \"${DL_ARGS_PROJ}_DEVEL OFF\"\n"
       "${DL_ARGS_UNPARSED_ARGUMENTS}\nSOURCE_DIR \"${DL_ARGS_SOURCE_DIR}\"\n"
       "CONFIGURE_COMMAND \"\"\nBUILD_COMMAND \"\"\nINSTALL_COMMAND \"\"\nTEST_COMMAND \"\")")
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}"
