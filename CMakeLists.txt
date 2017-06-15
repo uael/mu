@@ -106,7 +106,7 @@ if (MSVC)
   endforeach ()
 endif ()
 
-if (DEVEL)
+if (DEVEL AND EXISTS ${${PROJECT_NAME}_TEST_DIR}/CMakeLists.txt)
   enable_testing()
   add_vendor(PROJ cute
     GIT_REPOSITORY https://github.com/uael/cute.git
