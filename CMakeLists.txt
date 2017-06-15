@@ -10,27 +10,26 @@ option(COVERAGE "Turn on COVERAGE support" OFF)
 function(add_vendor)
   include(CMakeParseArguments)
   cmake_parse_arguments(DL_ARGS "" "PROJ" "" ${ARGN})
-  set(DL_ARGS_DOWNLOAD_DIR "${CMAKE_BINARY_DIR}/vendor/${DL_ARGS_PROJ}")
-  set(DL_ARGS_SOURCE_DIR "${DL_ARGS_DOWNLOAD_DIR}/src")
-  file(WRITE "${DL_ARGS_DOWNLOAD_DIR}/CMakeLists.txt"
+  set(DL_ARGS_BUILD_DIR "${CMAKE_BINARY_DIR}/vendor/${DL_ARGS_PROJ}")
+  set(DL_ARGS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/vendor/${DL_ARGS_PROJ}")
+  file(WRITE "${DL_ARGS_BUILD_DIR}/CMakeLists.txt"
     "cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)\n"
     "project(vendor-${DL_ARGS_PROJ} NONE)\n"
     "include(ExternalProject)\n"
     "ExternalProject_Add(vendor-${DL_ARGS_PROJ}\n"
-    "    ${DL_ARGS_UNPARSED_ARGUMENTS}\nSOURCE_DIR \"${DL_ARGS_SOURCE_DIR}\"\n"
-    "    CONFIGURE_COMMAND \"\"\nBUILD_COMMAND \"\"\nINSTALL_COMMAND \"\"\nTEST_COMMAND \"\"\n"
-    ")")
+    "${DL_ARGS_UNPARSED_ARGUMENTS}\nSOURCE_DIR \"${DL_ARGS_SOURCE_DIR}\"\n"
+    "CONFIGURE_COMMAND \"\"\nBUILD_COMMAND \"\"\nINSTALL_COMMAND \"\"\nTEST_COMMAND \"\")")
   execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}"
     -DDEVEL=OFF
     -D "CMAKE_MAKE_PROGRAM:FILE=${CMAKE_MAKE_PROGRAM}" . --no-warn-unused-cli
     RESULT_VARIABLE result OUTPUT_QUIET
-    WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}")
+    WORKING_DIRECTORY "${DL_ARGS_BUILD_DIR}")
   if (result)
     message(FATAL_ERROR "Config step for ${DL_ARGS_PROJ} failed: ${result}")
   endif ()
   execute_process(COMMAND ${CMAKE_COMMAND} --build .
     RESULT_VARIABLE result OUTPUT_QUIET
-    WORKING_DIRECTORY "${DL_ARGS_DOWNLOAD_DIR}")
+    WORKING_DIRECTORY "${DL_ARGS_BUILD_DIR}")
   if (result)
     message(FATAL_ERROR "Build step for ${DL_ARGS_PROJ} failed: ${result}")
   endif ()
@@ -66,6 +65,9 @@ set(${PROJECT_NAME}_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(${PROJECT_NAME}_TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
 set(${PROJECT_NAME}_VENDOR_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
+if (EXISTS ${${PROJECT_NAME}_VENDOR_DIR}/CMakeLists.txt)
+  add_subdirectory(${${PROJECT_NAME}_VENDOR_DIR})
+endif ()
 if (EXISTS ${${PROJECT_NAME}_INCLUDE_DIR})
   file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS} ${${PROJECT_NAME}_INCLUDE_DIR}/${PROJECT_NAME}/*.h)
 endif ()

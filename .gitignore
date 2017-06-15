@@ -140,6 +140,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# cmake vendor
+/vendor/*/
+
 # Clion
 .idea/
 cmake-build-debug/
