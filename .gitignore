@@ -141,11 +141,11 @@ crashlytics-build.properties
 fabric.properties
 
 # cmake vendor
-/vendor/*/
+/vendor
 
 # Clion
 .idea/
-cmake-build-debug/
+cmake-build-*/
 
 # xmake
 .xmake/
