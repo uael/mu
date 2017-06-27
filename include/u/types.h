@@ -58,6 +58,9 @@
 #  include <wchar.h>
 # endif
 #endif
+#if PLATFORM_POSIX
+# include <unistd.h>
+#endif
 #if PLATFORM_PNACL || (PLATFORM_POSIX && !PLATFORM_APPLE)
 # include <sys/types.h>
 #endif
