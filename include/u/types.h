@@ -153,7 +153,7 @@ typedef float real;
 
 #if PLATFORM_WINDOWS
 # if ARCH_X86
-typedef int ssize_t;
+typedef int32_t ssize_t;
 # else
 typedef int64_t ssize_t;
 # endif
