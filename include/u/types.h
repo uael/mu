@@ -92,7 +92,6 @@
 #     define PATH_MAX 4096
 #   endif
 # endif
-#endif
 #else
 # include <unistd.h>
 #endif
