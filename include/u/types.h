@@ -90,6 +90,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 #endif
+#if defined(__MACH__)
+# include <mach/mach_time.h>
+#endif
 
 #ifndef __cplusplus
 # define nullptr NULL
