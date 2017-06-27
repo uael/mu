@@ -83,6 +83,16 @@
 # define STDIN_FILENO 0
 # define STDOUT_FILENO 1
 # define STDERR_FILENO 2
+# ifndef PATH_MAX
+#   ifdef MAX_PATH
+#     define PATH_MAX MAX_PATH
+#   elif defined(FILENAME_MAX)
+#     define PATH_MAX FILENAME_MAX
+#   else
+#     define PATH_MAX 4096
+#   endif
+# endif
+#endif
 #else
 # include <unistd.h>
 #endif
