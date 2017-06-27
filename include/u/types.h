@@ -95,10 +95,8 @@
 #else
 # include <unistd.h>
 #endif
-#if PLATFORM_PNACL || (PLATFORM_POSIX && !PLATFORM_APPLE) || COMPILER_MSVC
-# include <sys/types.h>
-# include <sys/stat.h>
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
 #if defined(__MACH__)
 # include <mach/mach_time.h>
 #endif
