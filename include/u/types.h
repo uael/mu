@@ -58,11 +58,37 @@
 #  include <wchar.h>
 # endif
 #endif
-#if PLATFORM_POSIX
+#if PLATFORM_WINDOWS
+# include <io.h>
+# include <process.h> /* for getpid() and the exec..() family */
+# include <direct.h> /* for _getcwd() and _chdir() */
+# include <windows.h>
+# include <Shlwapi.h>
+# include <tchar.h>
+# define srandom srand
+# define random rand
+# define R_OK    4       /* Test for read permission.  */
+# define W_OK    2       /* Test for write permission.  */
+# define F_OK    0       /* Test for existence.  */
+# define access _access
+# define dup2 _dup2
+# define execve _execve
+# define ftruncate _chsize
+# define unlink _unlink
+# define fileno _fileno
+# define getcwd _getcwd
+# define chdir _chdir
+# define isatty _isatty
+# define lseek _lseek
+# define STDIN_FILENO 0
+# define STDOUT_FILENO 1
+# define STDERR_FILENO 2
+#else
 # include <unistd.h>
 #endif
-#if PLATFORM_PNACL || (PLATFORM_POSIX && !PLATFORM_APPLE)
+#if PLATFORM_PNACL || (PLATFORM_POSIX && !PLATFORM_APPLE) || COMPILER_MSVC
 # include <sys/types.h>
+# include <sys/stat.h>
 #endif
 
 #ifndef __cplusplus
