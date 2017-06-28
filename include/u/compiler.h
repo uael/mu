@@ -108,6 +108,7 @@
  * @}
  */
 
+#define STRNSIZE(s) (s), (sizeof(s)-1)
 #define NX_STRINGIFY(x) #x
 #define STRINGIFY(x) NX_STRINGIFY(x)
 #define VERSION_NO(A, B, C) (((A)*10000UL)+(B)*100UL+(C))
