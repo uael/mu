@@ -30,5 +30,14 @@
 #ifndef  U_FS_H__
 # define U_FS_H__
 
+#include <fcntl.h>
+#include <stdio.h>
+
+#include "u/string.h"
+
+int64_t ufsize(ustr_t path);
+bool ufexists(ustr_t path);
+ustr_t ufread(ustr_t path);
+bool ufwrite(ustr_t path, ustr_t buffer);
 
 #endif /* U_FS_H__ */
